@@ -1,0 +1,33 @@
+package com.electron.designsystem.components.button.variants
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.electron.designsystem.components.button.models.ButtonUiModel
+import com.electron.designsystem.components.button.primitives.ButtonPrimitive
+import com.electron.designsystem.components.icon.models.IconTone
+
+/** Filled brand button: the single most prominent action of a screen. */
+@Composable
+internal fun ButtonPrimary(
+    uiModel: ButtonUiModel.Primary,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val colors = primaryButtonColors(uiModel.state, uiModel.isEnabled)
+    ButtonPrimitive(
+        text = uiModel.text,
+        icon = uiModel.icon?.copy(tone = IconTone.OnBrand),
+        backgroundColor = colors.background,
+        contentColor = colors.content,
+        borderColor = colors.border,
+        height = uiModel.size.height(),
+        contentPadding = uiModel.size.contentPadding(),
+        isEnabled = uiModel.isEnabled,
+        isFullWidth = uiModel.isFullWidth,
+        isUnderlined = false,
+        isLoading = false,
+        testTag = uiModel.testTag,
+        onClick = onClick,
+        modifier = modifier
+    )
+}
