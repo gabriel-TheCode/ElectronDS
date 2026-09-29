@@ -18,18 +18,26 @@ ElectronDS enforces strict boundaries between layers to ensure scalability and m
 
 ```mermaid
 graph TD
-    subgraph "Feature Layer (Public)"
+    subgraph Feature["Feature module"]
         A[ViewModel] --> B[Screen UI State]
         B --> C[UI Mapper]
-        C --> D[ElectronComponent]
+        C --> S[Screen]
     end
 
-    subgraph "Design System Library (Private/Internal)"
-        D --> E[Variant]
-        E --> F[Primitive]
-        F --> G[Tokens]
+    subgraph DS["ElectronDS library"]
+        D["3. Component: ElectronX (public)"] --> E["2. Variant (internal)"]
+        E --> F["1. Primitive (internal)"]
+        F --> G["Tokens & Theme (public)"]
     end
+
+    S -- "UI model (public)" --> D
+    D -. "signals: onClick, onClear, ..." .-> S
+    S -. "events" .-> A
 ```
+
+The feature module owns the ViewModel, screen state, mappers and screens. The
+library exposes only Components, their UI models and the tokens/theme;
+variants and primitives stay `internal`.
 
 ### 1. Primitive (`internal`)
 Stateless visual blocks. They receive raw, fully resolved parameters (Color, Dp, TextStyle). They have no "meaning"—only rendering.
