@@ -27,9 +27,40 @@ Component) with strict, tool-enforced boundaries.
 ### Layer 3: Component (`components/*/ElectronX.kt`)
 - The single public entry point, named `Electron` + component name.
 - Dispatches exhaustively on the sealed UI model.
-- Exposes callbacks as parameters. When a component emits more than one kind
-  of interaction, it exposes a single typed signal callback
-  (`onSignal: (ChipSignal) -> Unit`) instead of a growing list of lambdas.
+- Exposes signals upward, one callback parameter per interaction (see below).
+
+## Signals
+A signal is a user interaction a component emits upward (a tap, a clear, a
+value change). Each signal is exposed as its own dedicated callback
+parameter.
+
+| Component | Callbacks |
+|---|---|
+| `ElectronButton` | `onClick` |
+| `ElectronFab` | `onClick` |
+| `ElectronChip` | `onClick`, `onClear` (Filter chips only) |
+| `ElectronCard` | `onActionClick` (Default card only) |
+| `ElectronSheetHeader` | `onCloseClick`, `onResetClick` |
+| `ElectronSwitch` | `onCheckedChange` |
+| `ElectronInputField` | `onValueChange` |
+
+Rules:
+- **Naming**: `on` + action, following Compose/Material conventions:
+  `onClick` for the component's main tap, `on<Element>Click` for a
+  secondary element (`onCloseClick`, `onActionClick`), `on<Value>Change`
+  for value updates, or a domain verb for a specific action (`onClear`).
+- **Signature**: `() -> Unit` for plain actions; carry the new value only
+  for value changes (`(Boolean) -> Unit`, `(String) -> Unit`).
+- **Required vs optional**: the main interaction is a required parameter
+  placed right after `uiModel`. Callbacks tied to an optional element (a
+  reset action that only exists when `resetLabel` is set, a clear icon only
+  shown on selected Filter chips) default to `{}` and are placed after
+  `modifier`.
+- **Pass-through**: variants and primitives forward the callbacks
+  unchanged. The design system never interprets a signal; the screen
+  decides what each one means.
+- **Never in UI models**: callbacks are component parameters, never fields
+  of a UI model.
 
 ## UI models (`components/*/models`)
 - Sealed classes, one subclass per variant, `@Immutable` data classes.

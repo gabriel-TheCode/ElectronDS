@@ -37,9 +37,3 @@ public sealed class ChipUiModel {
         val testTag: String = "electron_chip_assist"
     ) : ChipUiModel()
 }
-
-/** Signals emitted by chips; interpreted only by the screen. */
-public sealed interface ChipSignal {
-    public data object Clicked : ChipSignal
-    public data object Cleared : ChipSignal
-}

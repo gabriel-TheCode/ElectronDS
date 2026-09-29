@@ -20,9 +20,3 @@ public sealed class SheetHeaderUiModel {
         val testTag: String = "electron_sheet_header"
     ) : SheetHeaderUiModel()
 }
-
-/** Signals emitted by the sheet header; interpreted only by the screen. */
-public sealed interface SheetHeaderSignal {
-    public data object CloseClicked : SheetHeaderSignal
-    public data object ResetClicked : SheetHeaderSignal
-}

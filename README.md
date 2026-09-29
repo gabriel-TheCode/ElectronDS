@@ -38,7 +38,7 @@ Stateless visual blocks. They receive raw, fully resolved parameters (Color, Dp,
 The bridge between semantics and raw values. Variants receive a component-specific UI model and resolve semantic tokens (e.g., `TagTone.Success`) into the correct colors and shapes for the current theme.
 
 ### 3. Component (`public`)
-The single public entry point. It dispatches on a sealed UI model class and exposes signals upward. By using `explicitApi()`, we ensure that only the intended Component layer is accessible to feature teams.
+The single public entry point. It dispatches on a sealed UI model class and exposes signals upward, one callback per interaction (`onClick`, `onClear`, ...). By using `explicitApi()`, we ensure that only the intended Component layer is accessible to feature teams.
 
 ---
 
@@ -46,7 +46,7 @@ The single public entry point. It dispatches on a sealed UI model class and expo
 
 - **Visually Authoritative, Behaviorally Neutral**: The system owns *how* it looks; the feature owns *what* it means and *how* it behaves.
 - **Sealed UI Models**: Components are driven by immutable, sealed data classes. This eliminates "parameter bloat" and makes testing easier.
-- **Upward Signals**: Instead of passing dozens of lambdas, complex components use a single `onSignal` callback with a typed signal enum (e.g., `ChipSignal`).
+- **Upward Signals**: User interactions are emitted upward as signals, each through its own dedicated callback (e.g., `onClick`, `onClear`, `onCloseClick`).
 - **Strict Enforcement**: Uses Kotlin's `internal` visibility and `explicitApi()` mode to prevent leaking implementation details.
 
 ---
@@ -83,7 +83,7 @@ ElectronTheme {
 }
 ```
 
-### Advanced: Signal Handling
+### Multiple Interactions
 ```kotlin
 ElectronChip(
     uiModel = ChipUiModel.Filter(
@@ -91,12 +91,8 @@ ElectronChip(
         valueText = "30 days",
         isSelected = true
     ),
-    onSignal = { signal ->
-        when (signal) {
-            ChipSignal.Clicked -> // Handle selection
-            ChipSignal.Cleared -> // Handle removal
-        }
-    }
+    onClick = { /* Handle selection */ },
+    onClear = { /* Handle removal */ }
 )
 ```
 
