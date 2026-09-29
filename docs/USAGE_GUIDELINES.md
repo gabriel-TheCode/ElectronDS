@@ -159,6 +159,47 @@ if (uiState.showDisconnectDialog) {
 }
 ```
 
+### ElectronBottomSheet
+Compose it behind a state flag, like a dialog. With a `title`, the sheet
+shows an ElectronSheetHeader whose close button slides the sheet out
+before `onDismissRequest` fires. Width is capped at 640dp on tablets/TV.
+
+### ElectronTabs / ElectronSegmentedControl
+Tabs switch between sibling views of a screen (Overview / History);
+segmented controls filter or pick a value inside one view (Day / Week).
+`Fixed` tabs share the width (2 to 4 tabs), `Scrollable` tabs size to
+their labels and keep the selected tab in view.
+
+### ElectronNavigationBar
+3 to 5 top-level destinations. Use `Bottom` on compact widths and `Rail`
+on medium and expanded widths (tablets, TV): a bottom bar on a TV forces
+the D-pad on a long horizontal trip. Provide `selectedIcon` (filled glyph)
+so the active destination differs by shape, not only color.
+
+### ElectronMenu / ElectronDropdown
+`ElectronMenu` goes in the same `Box` as its anchor and opens below it
+(above when there is no room). It does not close itself: set
+`isExpanded = false` in `onItemClick`. `ElectronDropdown` is the form
+version: same look as ElectronInputField, the menu as wide as the field,
+the chosen option checked.
+
+### ElectronTooltip
+`Plain` names an icon-only control; `Rich` explains, with an optional
+action. Tooltips appear on long-press, hover or focus, so never put the
+only way to do something in one.
+
+### ElectronSlider
+For relative values (charge limit, power). Put formatted values in
+`valueText` (the header shows it in the data typeface). Commit expensive
+work in `onValueChangeFinished`, not `onValueChange`.
+
+### ElectronSkeleton
+Use skeletons when loading replaces content whose shape is known; use
+ElectronProgressIndicator for actions. `ListItem` and `MetricCard`
+placeholders match the real components' geometry exactly, so nothing
+shifts when data arrives. Give one placeholder per group a
+`contentDescription` ("Loading sessions").
+
 ### ElectronScaffold
 Slot-only page frame. Any conditional content (offline, error, empty) is
 decided by the screen inside the content slot.

@@ -50,10 +50,17 @@ parameter.
 | `ElectronTopBar` | `onNavigationClick`, `onActionClick` |
 | `ElectronEmptyState` | `onPrimaryActionClick`, `onSecondaryActionClick` (Default), `onRetryClick` (Error) |
 | `ElectronDialog` | `onConfirmClick`, `onDismissRequest`, `onDismissClick` (defaults to `onDismissRequest`) |
+| `ElectronBottomSheet` | `onDismissRequest`, `onResetClick` |
+| `ElectronTabs` | `onTabSelected` (tapped index) |
+| `ElectronNavigationBar` | `onItemSelected` (tapped index) |
+| `ElectronMenu` | `onItemClick` (tapped index), `onDismissRequest` |
+| `ElectronDropdown` | `onFieldClick`, `onOptionSelected` (index), `onDismissRequest` |
+| `ElectronTooltip` | `onActionClick` (Rich only) |
+| `ElectronSlider` | `onValueChange`, `onValueChangeFinished` |
 
 Descriptive components (`ElectronTag`, `ElectronAvatar`, `ElectronIcon`,
 `ElectronBadge`, `ElectronDivider`, `ElectronProgressIndicator`,
-`ElectronMetricCard`) emit no signal.
+`ElectronMetricCard`, `ElectronSkeleton`) emit no signal.
 
 Rules:
 - **Naming**: `on` + action, following Compose/Material conventions:
@@ -89,6 +96,20 @@ holds an `AvatarUiModel`, `TopBarAction` holds a `BadgeUiModel`).
 | `ElectronTopBar` | Icon, Badge |
 | `ElectronEmptyState` | Avatar, Button |
 | `ElectronDialog` | Avatar, Button |
+| `ElectronBottomSheet` | SheetHeader |
+| `ElectronTabs` | Badge |
+| `ElectronNavigationBar` | Badge |
+| `ElectronDropdown` | Menu |
+| `ElectronTooltip` | Button (Rich action) |
+| `ElectronSkeleton` | Card (MetricCard placeholder) |
+
+### Overlays
+Dialogs, sheets, menus and tooltips draw their visible surface in a
+separate internal composable (`DialogSurface`, `BottomSheetDefaultBody`,
+`MenuDefaultPanel`, `TooltipPlainSurface`, `TooltipRichSurface`) and wrap
+it in a window or popup only at the variant level. Previews and screenshot
+tests render the surfaces directly, because windows and popups cannot be
+captured off-device.
 
 ## UI models (`components/*/models`)
 - Sealed classes, one subclass per variant, `@Immutable` data classes.

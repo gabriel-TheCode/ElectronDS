@@ -42,6 +42,18 @@ public object ElectronShapes {
     public val segment: RoundedCornerShape = RoundedCornerShape(ElectronRadius.sm - ElectronSpacing.xxs)
 
     public val card: RoundedCornerShape = RoundedCornerShape(ElectronRadius.md)
+
+    /**
+     * Small floating surfaces anchored to an element (menus, rich tooltips).
+     * They float, but are compact: container radius, not the 20dp of sheets
+     * and dialogs, which would look bubbly at menu size.
+     */
+    public val popover: RoundedCornerShape = RoundedCornerShape(ElectronRadius.md)
+
+    /** Tab indicator: rounded on top, flat where it meets the divider. */
+    public val indicator: RoundedCornerShape =
+        RoundedCornerShape(topStart = ElectronRadius.xs, topEnd = ElectronRadius.xs)
+
     public val sheet: RoundedCornerShape =
         RoundedCornerShape(topStart = ElectronRadius.lg, topEnd = ElectronRadius.lg)
     public val dialog: RoundedCornerShape = RoundedCornerShape(ElectronRadius.lg)

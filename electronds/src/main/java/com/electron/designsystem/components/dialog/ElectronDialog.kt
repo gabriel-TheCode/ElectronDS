@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.electron.designsystem.components.dialog.models.DialogUiModel
+import com.electron.designsystem.components.dialog.variants.DialogBody
 import com.electron.designsystem.components.dialog.variants.DialogConfirmation
 import com.electron.designsystem.components.dialog.variants.DialogDestructive
 import com.electron.designsystem.utils.ElectronPreviewSurface
@@ -60,16 +61,17 @@ public fun ElectronDialog(
 @Composable
 private fun ElectronDialogPreview() {
     ElectronPreviewSurface {
-        ElectronDialog(
-            uiModel = DialogUiModel.Destructive(
-                title = "Disconnect charger?",
-                message = "Scheduled charging sessions will be cancelled.",
-                confirmLabel = "Disconnect",
-                dismissLabel = "Cancel",
-                icon = Icons.Outlined.LinkOff
-            ),
+        DialogBody(
+            title = "Disconnect charger?",
+            message = "Scheduled charging sessions will be cancelled.",
+            confirmLabel = "Disconnect",
+            dismissLabel = "Cancel",
+            icon = Icons.Outlined.LinkOff,
+            isDestructive = true,
+            testTag = "preview_dialog",
             onConfirmClick = {},
-            onDismissRequest = {}
+            onDismissClick = {},
+            modifier = Modifier
         )
     }
 }
