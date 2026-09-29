@@ -52,7 +52,8 @@ public object ElectronDimens {
     // Tabs and navigation
     public val tabHeight: Dp = 48.dp
     public val tabIndicatorHeight: Dp = 3.dp
-    public val navigationBarHeight: Dp = 64.dp
+    /** Fits an item: 8 padding + 32 indicator + 4 gap + 16 label + 8 padding (68), on the grid. */
+    public val navigationBarHeight: Dp = 72.dp
     public val navigationRailWidth: Dp = 80.dp
     public val navigationIndicatorWidth: Dp = 56.dp
     public val navigationIndicatorHeight: Dp = 32.dp
