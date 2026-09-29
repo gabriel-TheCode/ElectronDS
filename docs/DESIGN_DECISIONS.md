@@ -16,9 +16,10 @@ Every visual decision in the system follows from these rules. When two
 solutions are possible, the one that respects them wins.
 
 1. **Calm by default, loud on purpose.** Brand color is reserved for the
-   primary action, focus and selection that has no other signifier. A
-   screen should have one obvious thing to do. Neutral text on a raised
-   surface is enough to say "selected".
+   primary action, focus and selection. A screen should have one obvious
+   thing to do. Selection always speaks the same way: a light brand tint
+   (`interaction.selected` for chips on white, `primarySubtle` for moving
+   indicators on a track) with `primaryStrong` content.
 2. **Tone before lines.** Surfaces separate by tonal steps (canvas,
    surface, raised, sunken). Borders are hairlines, used only where tone is
    too close (cards on canvas, fields). Buttons, selected chips and
