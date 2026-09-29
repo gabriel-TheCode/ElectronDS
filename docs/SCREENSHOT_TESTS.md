@@ -41,12 +41,14 @@ is a design decision, not a test artifact.
 request and on `main`, and uploads the visual diffs as an artifact when it
 fails.
 
-To record golden images without a local Android SDK, run the workflow
-manually (Actions > Screenshot tests > Run workflow) on your branch with
-**record** checked: it records on GitHub's runner and commits the images to
-that branch. Run it once after adding a component or changing a visual
-decision, review the committed images in the pull request, then let the
-normal verification take over.
+Recording without a local Android SDK:
+- **First run**: when `electronds/src/test/snapshots/images` is empty, the
+  job records instead of verifying and commits the images to the pull
+  request branch. Review them in the pull request.
+- **After an intentional visual change**: run the workflow manually
+  (Actions > Screenshot tests > Run workflow) on your branch with
+  **record** checked; it re-records and commits. Manual runs are available
+  once the workflow file is on the default branch (a GitHub rule).
 
 ## Writing a new snapshot
 

@@ -23,7 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      # On pull requests, check out the head branch (not the merge commit) so
+      # recorded images can be committed back to it.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - uses: actions/setup-java@v4
         with:
@@ -32,16 +36,27 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      # Record when asked to, or when no golden image exists yet (first run
+      # on a new setup); otherwise verify against the committed images.
+      - name: Choose mode
+        id: mode
+        run: |
+          if [ "${{ inputs.record }}" = "true" ] || [ -z "$(ls -A electronds/src/test/snapshots/images 2>/dev/null)" ]; then
+            echo "record=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "record=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Verify snapshots
-        if: ${{ !inputs.record }}
+        if: steps.mode.outputs.record != 'true'
         run: ./gradlew :electronds:verifyPaparazziDebug
 
       - name: Record snapshots
-        if: ${{ inputs.record }}
+        if: steps.mode.outputs.record == 'true'
         run: ./gradlew :electronds:recordPaparazziDebug
 
       - name: Commit recorded snapshots
-        if: ${{ inputs.record }}
+        if: steps.mode.outputs.record == 'true' && github.event_name != 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -50,7 +65,7 @@ jobs:
             echo "Snapshots unchanged."
           else
             git commit -m "Record Paparazzi golden images"
-            git push origin HEAD:${{ github.ref_name }}
+            git push origin HEAD:${{ github.head_ref || github.ref_name }}
           fi
 
       - name: Upload visual diffs
