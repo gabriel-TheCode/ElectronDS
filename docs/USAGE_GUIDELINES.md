@@ -4,7 +4,8 @@
 
 1. Your ViewModel exposes a screen UI state.
 2. A UI mapper (pure functions) derives component UI models from that state.
-3. The screen passes UI models down and signals up.
+3. The screen passes UI models down and receives interactions back through
+   one dedicated callback per action (`onClick`, `onValueChange`, ...).
 
 ```kotlin
 // 1. Screen state (feature module)
@@ -52,18 +53,38 @@ wins over helper text when `isError` is true.
 ### ElectronChip
 Filter chips show `defaultText` when idle, `valueText` when selected, and
 call `onClick` when tapped and `onClear` when the clear icon is tapped.
-Selection is your data.
+Selection is your data. Assist chips only use `onClick`.
+```kotlin
+ElectronChip(
+    uiModel = uiState.toPeriodChipUiModel(),
+    onClick = viewModel::onPeriodChipClicked,
+    onClear = viewModel::onPeriodCleared
+)
+```
 
 ### ElectronCard
 `CardUiModel.Default(title?, actionLabel?)` frames a content slot;
 `CardUiModel.Status(message, severity)` renders a tinted message card.
+`onActionClick` fires when the footer action of a Default card is tapped.
 
 ### ElectronTag / ElectronAvatar / ElectronIcon
 Purely descriptive: pick a size, tone and style; the theme resolves colors.
 
-### ElectronSwitch / ElectronFab / ElectronSheetHeader
-Standard controls with hoisted state and one callback per interaction
-(`onCheckedChange`, `onClick`, `onCloseClick` / `onResetClick`).
+### ElectronSwitch / ElectronFab
+Standard controls with hoisted state: `ElectronSwitch` reports
+`onCheckedChange(Boolean)`, `ElectronFab` reports `onClick`.
+
+### ElectronSheetHeader
+`onCloseClick` fires when the close icon is tapped. `onResetClick` fires
+when the reset action is tapped; it is optional and only relevant when the
+UI model sets `resetLabel`.
+```kotlin
+ElectronSheetHeader(
+    uiModel = SheetHeaderUiModel.Default(title = "Filters", resetLabel = "Reset"),
+    onCloseClick = viewModel::onFiltersDismissed,
+    onResetClick = viewModel::onFiltersReset
+)
+```
 
 ### ElectronScaffold
 Slot-only page frame. Any conditional content (offline, error, empty) is
@@ -75,6 +96,8 @@ decided by the screen inside the content slot.
   stop you: they are internal).
 - Never put lambdas or raw `Dp`/`Color`/`FontWeight` into anything you feed
   a component; if you feel the need, request a new variant or token instead.
+- Wire each callback you need individually; never wrap several interactions
+  into a single handler with a `when` over an event type.
 - Build UI models in mappers, not inline in composables, so they are unit
   testable and preview-friendly.
 - One-off compositions (an error card with an illustration, a product tab
@@ -88,7 +111,10 @@ Adding a variant to an existing component:
 2. Create the internal variant that resolves it and calls the primitive.
 3. Add the branch in the component dispatch (the compiler enforces
    exhaustiveness).
-4. Add previews and an entry in the catalog.
+4. If the variant introduces a new interaction, add a dedicated callback
+   parameter to the component (optional, defaulting to `{}`, if other
+   variants don't use it). Never introduce an `onSignal` callback.
+5. Add previews and an entry in the catalog.
 
 Adding a new component: copy the folder shape of `components/tag` (the
 smallest complete example) and keep the visibility rules.

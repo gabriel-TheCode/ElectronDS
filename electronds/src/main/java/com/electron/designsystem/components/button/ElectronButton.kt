@@ -22,7 +22,7 @@ import com.electron.designsystem.utils.ElectronPreviewSurface
  *
  * API:
  * - [uiModel]: visual configuration (sealed [ButtonUiModel]).
- * - [onClick]: signal emitted upward, never interpreted here.
+ * - [onClick]: callback emitted upward, never interpreted here.
  *
  * Usage:
  * ```

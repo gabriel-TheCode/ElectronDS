@@ -27,12 +27,40 @@ Component) with strict, tool-enforced boundaries.
 ### Layer 3: Component (`components/*/ElectronX.kt`)
 - The single public entry point, named `Electron` + component name.
 - Dispatches exhaustively on the sealed UI model.
-- Exposes one callback parameter per interaction, named after the action
-  (`onClick`, `onClear`, `onCloseClick`, `onResetClick`, `onValueChange`...).
-  Components never bundle interactions into a single `onSignal` callback
-  with a typed signal. Callbacks for optional elements (e.g. a reset action
-  that only exists when a label is provided) default to `{}` and are placed
-  after `modifier`.
+- Exposes one callback parameter per interaction (see below).
+
+## Callbacks
+Every interaction a component can emit gets its own dedicated lambda
+parameter. There is no catch-all `onSignal: (XSignal) -> Unit` callback and
+no sealed "signal" / "event" type in the design system.
+
+| Component | Callbacks |
+|---|---|
+| `ElectronButton` | `onClick` |
+| `ElectronFab` | `onClick` |
+| `ElectronChip` | `onClick`, `onClear` (Filter chips only) |
+| `ElectronCard` | `onActionClick` (Default card only) |
+| `ElectronSheetHeader` | `onCloseClick`, `onResetClick` |
+| `ElectronSwitch` | `onCheckedChange` |
+| `ElectronInputField` | `onValueChange` |
+
+Rules:
+- **Naming**: `on` + action, following Compose/Material conventions:
+  `onClick` for the component's main tap, `on<Element>Click` for a
+  secondary element (`onCloseClick`, `onActionClick`), `on<Value>Change`
+  for value updates, or a domain verb for a specific action (`onClear`).
+- **Signature**: `() -> Unit` for plain actions; carry the new value only
+  for value changes (`(Boolean) -> Unit`, `(String) -> Unit`).
+- **Required vs optional**: the main interaction is a required parameter
+  placed right after `uiModel`. Callbacks tied to an optional element (a
+  reset action that only exists when `resetLabel` is set, a clear icon only
+  shown on selected Filter chips) default to `{}` and are placed after
+  `modifier`.
+- **Pass-through**: variants and primitives forward the lambdas unchanged.
+  The design system never wraps, interprets or combines callbacks; the
+  screen decides what each one means.
+- **Never in UI models**: callbacks are component parameters, never fields
+  of a UI model.
 
 ## UI models (`components/*/models`)
 - Sealed classes, one subclass per variant, `@Immutable` data classes.
@@ -49,7 +77,7 @@ Component) with strict, tool-enforced boundaries.
   version exposes slots only.
 - Screens own data, meaning and event interpretation. The catalog's
   `PayeeFormSection` shows the full loop: screen UI state, UI mapper
-  producing component UI models, signals flowing back up.
+  producing component UI models, callbacks flowing back up.
 
 ## Enforcement mechanisms
 1. `explicitApi()` on the library module: every public declaration is
