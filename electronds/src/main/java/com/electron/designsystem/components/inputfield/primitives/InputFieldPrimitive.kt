@@ -82,7 +82,7 @@ internal fun InputFieldPrimitive(
             !isEnabled -> Color.Transparent
             isError -> c.status.error
             isFocused -> c.border.focus
-            isReadOnly -> Color.Transparent
+            isReadOnly -> c.border.subtle
             else -> c.border.default
         },
         animationSpec = tween(ElectronMotion.quick, easing = ElectronMotion.easeStandard),
@@ -93,9 +93,11 @@ internal fun InputFieldPrimitive(
         animationSpec = tween(ElectronMotion.quick, easing = ElectronMotion.easeStandard),
         label = "fieldBorderWidth"
     )
+    // Three distinct looks: editable (white field, border), read-only (no fill,
+    // hairline: a value you can read and copy), disabled (grey fill, no border).
     val containerColor = when {
         !isEnabled -> c.interaction.disabledBackground
-        isReadOnly -> c.background.surfaceSunken
+        isReadOnly -> Color.Transparent
         else -> c.background.surface
     }
     val textColor = if (isEnabled) c.content.primary else c.interaction.disabledContent

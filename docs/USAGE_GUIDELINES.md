@@ -128,7 +128,13 @@ ElectronListItem(
 Key figure for dashboards. Format the value in your mapper; the card
 renders it in the data typeface. `MetricDelta` separates the trend
 direction from its sentiment, since "up" is good for revenue but bad for
-consumption.
+consumption. Cards placed side by side should share one height:
+```kotlin
+Row(horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.md), modifier = Modifier.height(IntrinsicSize.Min)) {
+    ElectronMetricCard(consumption, modifier = Modifier.weight(1f).fillMaxHeight())
+    ElectronMetricCard(battery, modifier = Modifier.weight(1f).fillMaxHeight())
+}
+```
 
 ### ElectronTopBar
 Fits the `topBar` slot of `ElectronScaffold`. `navigation` is an enum

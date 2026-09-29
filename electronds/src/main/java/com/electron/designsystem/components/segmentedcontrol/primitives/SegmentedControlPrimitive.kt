@@ -2,7 +2,7 @@ package com.electron.designsystem.components.segmentedcontrol.primitives
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -27,14 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import com.electron.designsystem.tokens.ElectronDimens
-import com.electron.designsystem.tokens.ElectronElevation
 import com.electron.designsystem.tokens.ElectronMotion
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
@@ -49,11 +47,15 @@ internal data class SegmentColors(
 )
 
 /**
- * Sunken track with one raised indicator that slides to the selected
+ * Sunken track with one tinted indicator that slides to the selected
  * segment. A single moving indicator explains the change ("the value moved
- * here") better than two segments swapping backgrounds, and it is the only
- * spring in the system: a position change is physical, a color change is
- * not. The indicator radius is concentric with the track.
+ * here") better than two segments swapping backgrounds; a position change
+ * is physical, so it moves on a spring. The indicator radius is concentric
+ * with the track.
+ *
+ * The animated value is the selected index, not a position: a new selection
+ * slides, while a size change (rotation, split screen) re-places the
+ * indicator instantly from the current width instead of sliding it.
  */
 @Composable
 internal fun SegmentedControlPrimitive(
@@ -79,18 +81,17 @@ internal fun SegmentedControlPrimitive(
     ) {
         val gap = ElectronSpacing.xxs
         val segmentWidth = (maxWidth - gap * (options.size - 1)) / options.size
-        val indicatorOffset by animateDpAsState(
-            targetValue = (segmentWidth + gap) * safeIndex,
+        val animatedIndex by animateFloatAsState(
+            targetValue = safeIndex.toFloat(),
             animationSpec = spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow),
             label = "segmentIndicator"
         )
 
         Box(
             modifier = Modifier
-                .offset(x = indicatorOffset)
+                .offset(x = (segmentWidth + gap) * animatedIndex)
                 .width(segmentWidth)
                 .fillMaxHeight()
-                .shadow(ElectronElevation.raised, ElectronShapes.segment)
                 .background(colors.indicator, ElectronShapes.segment)
         )
 
