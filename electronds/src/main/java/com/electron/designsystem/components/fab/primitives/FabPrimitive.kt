@@ -36,7 +36,7 @@ internal fun ExtendedFabPrimitive(
         onClick = onClick,
         expanded = isExpanded,
         shape = ElectronShapes.pill,
-        containerColor = colors.brand.primary,
+        containerColor = colors.brand.primaryFill,
         contentColor = colors.brand.onPrimary,
         elevation = FloatingActionButtonDefaults.elevation(ElectronElevation.floating),
         icon = {
@@ -68,7 +68,7 @@ internal fun CompactFabPrimitive(
         interactionSource = interactionSource,
         onClick = onClick,
         shape = ElectronShapes.pill,
-        containerColor = colors.brand.primary,
+        containerColor = colors.brand.primaryFill,
         contentColor = colors.brand.onPrimary,
         elevation = FloatingActionButtonDefaults.elevation(ElectronElevation.floating),
         modifier = modifier

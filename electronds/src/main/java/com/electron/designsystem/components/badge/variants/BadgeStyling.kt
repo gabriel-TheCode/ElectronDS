@@ -11,11 +11,11 @@ internal data class BadgeColorsResolved(val background: Color, val content: Colo
 internal fun BadgeTone.resolve(): BadgeColorsResolved {
     val c = ElectronTheme.colors
     return when (this) {
-        BadgeTone.Brand -> BadgeColorsResolved(c.brand.primary, c.brand.onPrimary)
-        BadgeTone.Accent -> BadgeColorsResolved(c.brand.accent, c.brand.onAccent)
+        BadgeTone.Brand -> BadgeColorsResolved(c.brand.primaryFill, c.brand.onPrimary)
+        BadgeTone.Accent -> BadgeColorsResolved(c.brand.accentFill, c.brand.onAccent)
         BadgeTone.Neutral -> BadgeColorsResolved(c.content.secondary, c.content.inverse)
-        BadgeTone.Success -> BadgeColorsResolved(c.status.success, c.status.onSuccess)
-        BadgeTone.Error -> BadgeColorsResolved(c.status.error, c.status.onError)
+        BadgeTone.Success -> BadgeColorsResolved(c.status.successFill, c.status.onSuccess)
+        BadgeTone.Error -> BadgeColorsResolved(c.status.errorFill, c.status.onError)
     }
 }
 

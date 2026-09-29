@@ -16,10 +16,12 @@ public val ElectronLightColors: ElectronColors = ElectronColors(
     isDark = false,
     brand = ElectronColors.Brand(
         primary = ElectronPalette.volt600,
+        primaryFill = ElectronPalette.volt600,
         primaryStrong = ElectronPalette.volt700,
         primarySubtle = ElectronPalette.volt100,
         onPrimary = ElectronPalette.graphite000,
         accent = ElectronPalette.ion800,
+        accentFill = ElectronPalette.ion800,
         accentSubtle = ElectronPalette.ion100,
         onAccent = ElectronPalette.graphite000
     ),
@@ -47,15 +49,19 @@ public val ElectronLightColors: ElectronColors = ElectronColors(
     ),
     status = ElectronColors.Status(
         success = ElectronPalette.green700,
+        successFill = ElectronPalette.green700,
         successSubtle = ElectronPalette.green100,
         onSuccess = ElectronPalette.graphite000,
         warning = ElectronPalette.amber700,
+        warningFill = ElectronPalette.amber700,
         warningSubtle = ElectronPalette.amber100,
         onWarning = ElectronPalette.graphite000,
         error = ElectronPalette.red600,
+        errorFill = ElectronPalette.red600,
         errorSubtle = ElectronPalette.red100,
         onError = ElectronPalette.graphite000,
         info = ElectronPalette.blue700,
+        infoFill = ElectronPalette.blue700,
         infoSubtle = ElectronPalette.blue100,
         onInfo = ElectronPalette.graphite000
     ),
