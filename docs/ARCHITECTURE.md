@@ -27,9 +27,12 @@ Component) with strict, tool-enforced boundaries.
 ### Layer 3: Component (`components/*/ElectronX.kt`)
 - The single public entry point, named `Electron` + component name.
 - Dispatches exhaustively on the sealed UI model.
-- Exposes callbacks as parameters. When a component emits more than one kind
-  of interaction, it exposes a single typed signal callback
-  (`onSignal: (ChipSignal) -> Unit`) instead of a growing list of lambdas.
+- Exposes one callback parameter per interaction, named after the action
+  (`onClick`, `onClear`, `onCloseClick`, `onResetClick`, `onValueChange`...).
+  Components never bundle interactions into a single `onSignal` callback
+  with a typed signal. Callbacks for optional elements (e.g. a reset action
+  that only exists when a label is provided) default to `{}` and are placed
+  after `modifier`.
 
 ## UI models (`components/*/models`)
 - Sealed classes, one subclass per variant, `@Immutable` data classes.

@@ -51,7 +51,8 @@ wins over helper text when `isError` is true.
 
 ### ElectronChip
 Filter chips show `defaultText` when idle, `valueText` when selected, and
-emit `ChipSignal.Clicked` or `ChipSignal.Cleared`. Selection is your data.
+call `onClick` when tapped and `onClear` when the clear icon is tapped.
+Selection is your data.
 
 ### ElectronCard
 `CardUiModel.Default(title?, actionLabel?)` frames a content slot;
@@ -61,7 +62,8 @@ emit `ChipSignal.Clicked` or `ChipSignal.Cleared`. Selection is your data.
 Purely descriptive: pick a size, tone and style; the theme resolves colors.
 
 ### ElectronSwitch / ElectronFab / ElectronSheetHeader
-Standard controls with hoisted state and signal callbacks.
+Standard controls with hoisted state and one callback per interaction
+(`onCheckedChange`, `onClick`, `onCloseClick` / `onResetClick`).
 
 ### ElectronScaffold
 Slot-only page frame. Any conditional content (offline, error, empty) is

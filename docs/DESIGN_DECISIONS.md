@@ -71,9 +71,12 @@ decisive, like a circuit closing.
 3. **Semantic enums replace raw styling in UI models.** `TagTone.Success`
    instead of a `Color`; `AvatarSize.Md` instead of `40.dp`. The system,
    not the feature, decides what those mean per theme.
-4. **Typed signals for multi-interaction components.** `ChipSignal` and
-   `SheetHeaderSignal` scale better than parameter lists of lambdas and
-   keep event vocabulary explicit.
+4. **One callback per interaction.** Components expose a dedicated,
+   action-named lambda for every interaction (`ElectronChip(onClick,
+   onClear)`, `ElectronSheetHeader(onCloseClick, onResetClick)`), matching
+   Compose and Material conventions. No `onSignal` catch-all: each call
+   site wires only what it needs and the compiler shows exactly which
+   interactions exist.
 5. **`explicitApi()` as an architectural tool.** The layer boundary is a
    compiler rule, not a convention.
 6. **Feature-flavored components stay out.** Anything encoding product

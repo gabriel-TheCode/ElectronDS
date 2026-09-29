@@ -33,7 +33,6 @@ import com.electron.designsystem.components.card.ElectronCard
 import com.electron.designsystem.components.card.models.CardSeverity
 import com.electron.designsystem.components.card.models.CardUiModel
 import com.electron.designsystem.components.chip.ElectronChip
-import com.electron.designsystem.components.chip.models.ChipSignal
 import com.electron.designsystem.components.chip.models.ChipUiModel
 import com.electron.designsystem.components.fab.ElectronFab
 import com.electron.designsystem.components.fab.models.FabUiModel
@@ -145,7 +144,8 @@ fun CatalogScreen(
             SectionTitle("Sheet header")
             ElectronSheetHeader(
                 uiModel = SheetHeaderUiModel.Default(title = "Filters", resetLabel = "Reset"),
-                onSignal = {}
+                onCloseClick = {},
+                onResetClick = {}
             )
 
             SectionTitle("Feature example: payee form")
@@ -168,16 +168,12 @@ private fun ChipShowcase() {
                 isSelected = periodSelected,
                 clearIconContentDescription = "Clear period filter"
             ),
-            onSignal = { signal ->
-                when (signal) {
-                    ChipSignal.Clicked -> periodSelected = true
-                    ChipSignal.Cleared -> periodSelected = false
-                }
-            }
+            onClick = { periodSelected = true },
+            onClear = { periodSelected = false }
         )
         ElectronChip(
             uiModel = ChipUiModel.Assist(text = "Filters", leadingIcon = Icons.Outlined.Tune),
-            onSignal = {}
+            onClick = {}
         )
     }
 }

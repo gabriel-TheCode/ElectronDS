@@ -5,7 +5,6 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.electron.designsystem.components.chip.models.ChipSignal
 import com.electron.designsystem.components.chip.models.ChipUiModel
 import com.electron.designsystem.components.chip.primitives.ChipPrimitive
 
@@ -16,7 +15,8 @@ import com.electron.designsystem.components.chip.primitives.ChipPrimitive
 @Composable
 internal fun ChipFilter(
     uiModel: ChipUiModel.Filter,
-    onSignal: (ChipSignal) -> Unit,
+    onClick: () -> Unit,
+    onClear: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ChipPrimitive(
@@ -30,11 +30,11 @@ internal fun ChipFilter(
             uiModel.expandIconContentDescription
         },
         onTrailingIconClick = if (uiModel.isSelected) {
-            { onSignal(ChipSignal.Cleared) }
+            onClear
         } else {
             null
         },
-        onClick = { onSignal(ChipSignal.Clicked) },
+        onClick = onClick,
         testTag = uiModel.testTag,
         modifier = modifier
     )
