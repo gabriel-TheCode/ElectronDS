@@ -21,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.electron.catalog.demo.ChargerDashboardSection
 import com.electron.catalog.demo.PayeeFormSection
 import com.electron.designsystem.components.avatar.ElectronAvatar
 import com.electron.designsystem.components.avatar.models.AvatarSize
@@ -148,8 +149,23 @@ fun CatalogScreen(
                 onResetClick = {}
             )
 
+            SectionTitle("Top bars")
+            TopBarShowcase()
+
+            SectionTitle("Selection")
+            SelectionShowcase()
+
+            SectionTitle("Badges & progress")
+            FeedbackShowcase()
+
+            SectionTitle("Empty states")
+            EmptyStateShowcase()
+
             SectionTitle("Feature example: payee form")
             PayeeFormSection()
+
+            SectionTitle("Feature example: charger dashboard")
+            ChargerDashboardSection()
 
             Spacer(modifier = Modifier.padding(bottom = ElectronSpacing.huge))
         }

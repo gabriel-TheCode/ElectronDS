@@ -26,6 +26,7 @@ public object ElectronRadius {
  */
 public object ElectronShapes {
     public val control: RoundedCornerShape = RoundedCornerShape(ElectronRadius.sm)
+    public val segment: RoundedCornerShape = RoundedCornerShape(ElectronRadius.xs)
     public val field: RoundedCornerShape = RoundedCornerShape(ElectronRadius.sm)
     public val card: RoundedCornerShape = RoundedCornerShape(ElectronRadius.md)
     public val sheet: RoundedCornerShape =

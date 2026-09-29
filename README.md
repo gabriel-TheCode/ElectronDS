@@ -59,6 +59,20 @@ The single public entry point. It dispatches on a sealed UI model class and expo
 
 ---
 
+## Components
+
+| Category | Components |
+|---|---|
+| Actions | `ElectronButton`, `ElectronFab`, `ElectronChip` |
+| Inputs & selection | `ElectronInputField`, `ElectronSwitch`, `ElectronCheckbox`, `ElectronRadioButton`, `ElectronSegmentedControl` |
+| Display | `ElectronIcon`, `ElectronAvatar`, `ElectronTag`, `ElectronBadge`, `ElectronDivider`, `ElectronProgressIndicator` |
+| Containers | `ElectronCard`, `ElectronSheetHeader`, `ElectronScaffold` |
+| Composites | `ElectronListItem`, `ElectronMetricCard`, `ElectronTopBar`, `ElectronEmptyState`, `ElectronDialog` |
+
+Composites are built only from other public Electron components, following the same 3-layer rules.
+
+---
+
 ## Design System Tokens
 
 ElectronDS uses a "Charged Instrument Panel" identity—cool graphite surfaces with electric primary accents.
