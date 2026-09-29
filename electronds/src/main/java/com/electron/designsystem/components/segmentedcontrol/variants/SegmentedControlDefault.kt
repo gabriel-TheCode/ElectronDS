@@ -7,20 +7,25 @@ import com.electron.designsystem.components.segmentedcontrol.primitives.SegmentC
 import com.electron.designsystem.components.segmentedcontrol.primitives.SegmentedControlPrimitive
 import com.electron.designsystem.foundation.ElectronTheme
 
+/**
+ * The selected label is neutral (`content.primary`), not brand: the raised
+ * indicator already says "selected", and brand color stays reserved for
+ * primary actions, focus and selection that has no other signifier.
+ */
 @Composable
 internal fun segmentColors(isEnabled: Boolean): SegmentColors {
     val c = ElectronTheme.colors
     return if (isEnabled) {
         SegmentColors(
             track = c.background.surfaceSunken,
-            selectedContainer = c.background.surface,
-            selectedContent = c.brand.primary,
+            indicator = c.background.surfaceRaised,
+            selectedContent = c.content.primary,
             content = c.content.secondary
         )
     } else {
         SegmentColors(
             track = c.interaction.disabledBackground,
-            selectedContainer = c.background.surface,
+            indicator = c.background.surface,
             selectedContent = c.interaction.disabledContent,
             content = c.interaction.disabledContent
         )

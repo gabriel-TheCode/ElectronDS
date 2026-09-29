@@ -33,7 +33,7 @@ internal fun CheckboxDefault(
         isEnabled = uiModel.isEnabled,
         colors = electronCheckboxColors(uiModel.isError),
         label = uiModel.label,
-        labelStyle = ElectronTheme.typography.bodyMedium,
+        labelStyle = ElectronTheme.typography.bodyLarge,
         labelColor = if (uiModel.isEnabled) c.content.primary else c.content.disabled,
         testTag = uiModel.testTag,
         onCheckedChange = onCheckedChange,

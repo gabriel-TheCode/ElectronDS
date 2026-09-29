@@ -45,12 +45,18 @@ ElectronButton(ButtonUiModel.Secondary(text = "Cancel"), onClick = ...)
 ElectronButton(ButtonUiModel.Link(text = "Learn more"), onClick = ...)
 ElectronButton(ButtonUiModel.Loading(text = "Saving"), onClick = {})
 ```
-Use `state = ButtonState.Success/Error` for post-action feedback. Swap
-`Primary` for `Loading` in your mapper while a request is in flight.
+Use `state = ButtonState.Success/Error` for post-action feedback; the colors
+cross-fade to the new state. Swap `Primary` for `Loading` in your mapper
+while a request is in flight. Emphasis ladder: `Primary` (filled, one per
+screen), `Secondary` (tonal, no border), `Tertiary` (text), `Link` (inline,
+underlined, no padding so it aligns with surrounding text). Button icons
+always take the button's content color.
 
 ### ElectronInputField
-Value lives in your state; edits arrive via `onValueChange`. Error text
-wins over helper text when `isError` is true.
+Value lives in your state; edits arrive via `onValueChange`. The label sits
+above a 48dp field (same height as a Large button). Error text wins over
+helper text when `isError` is true, and appears with an icon and an
+animated height change instead of a layout jump.
 
 ### ElectronChip
 Filter chips show `defaultText` when idle, `valueText` when selected, and
@@ -65,9 +71,10 @@ ElectronChip(
 ```
 
 ### ElectronCard
-`CardUiModel.Default(title?, actionLabel?)` frames a content slot;
-`CardUiModel.Status(message, severity)` renders a tinted message card.
-`onActionClick` fires when the footer action of a Default card is tapped.
+`CardUiModel.Default(title?, actionLabel?)` frames a content slot: title
+and action share the header line (action trailing). The content slot owns
+its own padding. `CardUiModel.Status(message, severity)` renders a tinted
+message card. `onActionClick` fires when the header action is tapped.
 
 ### ElectronTag / ElectronAvatar / ElectronIcon
 Purely descriptive: pick a size, tone and style; the theme resolves colors.

@@ -41,6 +41,7 @@ internal fun ListItemRow(
     testTag: String,
     modifier: Modifier,
     role: Role? = null,
+    toggleValue: Boolean? = null,
     onClick: (() -> Unit)? = null,
     trailing: (@Composable RowScope.() -> Unit)? = null
 ) {
@@ -50,10 +51,11 @@ internal fun ListItemRow(
         titleStyle = ElectronTheme.typography.bodyLarge,
         titleColor = colors.title,
         subtitle = subtitle,
-        subtitleStyle = ElectronTheme.typography.bodySmall,
+        subtitleStyle = ElectronTheme.typography.bodyMedium,
         subtitleColor = colors.subtitle,
         isEnabled = isEnabled,
         role = role,
+        toggleValue = toggleValue,
         onClick = onClick,
         leading = if (leading != null) {
             { leading.Render() }

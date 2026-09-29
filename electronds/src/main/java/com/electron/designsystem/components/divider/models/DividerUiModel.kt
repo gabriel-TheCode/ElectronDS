@@ -2,7 +2,12 @@ package com.electron.designsystem.components.divider.models
 
 import androidx.compose.runtime.Immutable
 
-/** Horizontal inset of a divider, resolved to spacing tokens. */
+/**
+ * Horizontal inset of a divider.
+ * - [None]: full bleed.
+ * - [Start]: aligned with list item text (use between rows that have a leading visual).
+ * - [Both]: content inset on both sides.
+ */
 public enum class DividerInset { None, Start, Both }
 
 /** Visual weight of the separator line. */

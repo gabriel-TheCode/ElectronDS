@@ -21,7 +21,11 @@ import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
 
-/** Stateless tag container: resolved colors and metrics in, pixels out. */
+/**
+ * Stateless tag container: resolved colors and metrics in, pixels out.
+ * Tags use the smallest radius (4dp): they are labels, not buttons, and a
+ * crisp corner keeps them from being mistaken for tappable chips.
+ */
 @Composable
 internal fun TagPrimitive(
     backgroundColor: Color,
@@ -40,8 +44,8 @@ internal fun TagPrimitive(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .background(color = backgroundColor, shape = ElectronShapes.control)
-            .border(width = ElectronDimens.borderWidth, color = borderColor, shape = ElectronShapes.control)
+            .background(color = backgroundColor, shape = ElectronShapes.tag)
+            .border(width = ElectronDimens.borderWidth, color = borderColor, shape = ElectronShapes.tag)
             .padding(horizontal = horizontalPadding, vertical = verticalPadding)
             .testTag(testTag)
     ) {

@@ -1,5 +1,12 @@
 package com.electron.designsystem.components.badge.primitives
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
@@ -16,10 +23,15 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import com.electron.designsystem.tokens.ElectronDimens
+import com.electron.designsystem.tokens.ElectronMotion
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
 
-/** Pill-shaped marker. Renders a dot when [text] is null. */
+/**
+ * Pill-shaped marker. Renders a dot when [text] is null.
+ * A changing count rolls vertically (up when it grows, down when it
+ * shrinks), so a new notification is noticed without a flashing badge.
+ */
 @Composable
 internal fun BadgePrimitive(
     backgroundColor: Color,
@@ -54,7 +66,21 @@ internal fun BadgePrimitive(
                 .then(semanticsModifier)
                 .testTag(testTag)
         ) {
-            Text(text = text, style = textStyle, color = contentColor, maxLines = 1)
+            AnimatedContent(
+                targetState = text,
+                transitionSpec = {
+                    val grows = (targetState.filter(Char::isDigit).toIntOrNull() ?: 0) >=
+                        (initialState.filter(Char::isDigit).toIntOrNull() ?: 0)
+                    val direction = if (grows) 1 else -1
+                    (slideInVertically(tween(ElectronMotion.quick, easing = ElectronMotion.easeEnter)) { it * direction } +
+                        fadeIn(tween(ElectronMotion.quick))) togetherWith
+                        (slideOutVertically(tween(ElectronMotion.instant, easing = ElectronMotion.easeExit)) { -it * direction } +
+                            fadeOut(tween(ElectronMotion.instant)))
+                },
+                label = "badgeCount"
+            ) { value ->
+                Text(text = value, style = textStyle, color = contentColor, maxLines = 1)
+            }
         }
     }
 }

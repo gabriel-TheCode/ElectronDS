@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -23,6 +25,9 @@ import com.electron.designsystem.tokens.ElectronSpacing
 /**
  * Modal surface: optional visual, title, message and an end-aligned
  * actions row. [onDismissRequest] fires on back press or scrim tap.
+ *
+ * Rhythm: title and message are one statement (sm apart); the actions are
+ * the answer and sit clearly apart (xl), so the eye reads, then decides.
  */
 @Composable
 internal fun DialogPrimitive(
@@ -41,7 +46,6 @@ internal fun DialogPrimitive(
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(ElectronSpacing.md),
             modifier = modifier
                 .fillMaxWidth()
                 .shadow(ElectronElevation.overlay, ElectronShapes.dialog)
@@ -49,15 +53,18 @@ internal fun DialogPrimitive(
                 .padding(ElectronSpacing.xl)
                 .testTag(testTag)
         ) {
-            visual?.invoke()
+            if (visual != null) {
+                visual()
+                Spacer(modifier = Modifier.height(ElectronSpacing.lg))
+            }
             Text(text = title, style = titleStyle, color = titleColor)
+            Spacer(modifier = Modifier.height(ElectronSpacing.sm))
             Text(text = message, style = messageStyle, color = messageColor)
+            Spacer(modifier = Modifier.height(ElectronSpacing.xl))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.sm, Alignment.End),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = ElectronSpacing.sm),
+                modifier = Modifier.fillMaxWidth(),
                 content = actions
             )
         }
