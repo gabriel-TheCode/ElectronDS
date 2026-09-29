@@ -31,7 +31,9 @@ ElectronInputField(
 )
 ```
 
-The catalog app's `PayeeFormSection` is a runnable version of this loop.
+The catalog app's `PayeeFormSection` is a runnable version of this loop;
+`ChargerDashboardSection` applies it to the composite components (metric
+cards, list items, segmented control, dialog).
 
 ## Component reference
 
@@ -86,6 +88,70 @@ ElectronSheetHeader(
 )
 ```
 
+### ElectronCheckbox / ElectronRadioButton
+The whole row (control + label) is the touch target. `ElectronCheckbox`
+reports `onCheckedChange(Boolean)`; `ElectronRadioButton` reports `onClick`,
+and your state decides which option of the group is selected.
+
+### ElectronSegmentedControl
+2 to 4 mutually exclusive options. `onOptionSelected` carries the tapped
+index; `selectedIndex` is your data.
+```kotlin
+ElectronSegmentedControl(
+    uiModel = SegmentedControlUiModel.Default(options = listOf("Day", "Week", "Month"), selectedIndex = uiState.rangeIndex),
+    onOptionSelected = viewModel::onRangeSelected
+)
+```
+
+### ElectronBadge / ElectronDivider / ElectronProgressIndicator
+Purely descriptive. A null `progress` renders an indeterminate indicator.
+
+### ElectronListItem
+Pick the variant by purpose: `Navigation` (chevron, `onClick`), `Toggle`
+(switch, `onCheckedChange`), `Detail` (read-only value or tag). Leading
+visuals reuse `AvatarUiModel` / `IconUiModel` through `ListItemLeading`.
+```kotlin
+ElectronListItem(
+    uiModel = ListItemUiModel.Toggle(title = "Smart charging", isChecked = uiState.smartCharging),
+    onCheckedChange = viewModel::onSmartChargingToggled
+)
+```
+
+### ElectronMetricCard
+Key figure for dashboards. Format the value in your mapper; the card
+renders it in the data typeface. `MetricDelta` separates the trend
+direction from its sentiment, since "up" is good for revenue but bad for
+consumption.
+
+### ElectronTopBar
+Fits the `topBar` slot of `ElectronScaffold`. `navigation` is an enum
+(`None`, `Back`, `Close`) so every screen uses the same glyphs;
+`onNavigationClick` and `onActionClick` are the signals.
+
+### ElectronEmptyState
+`Default` for empty content (optional primary button and secondary link),
+`Error` for load failures (optional retry button). Show it inside your
+content slot when the list is empty or loading failed.
+
+### ElectronDialog
+Compose it behind a state flag to show it. `onConfirmClick` and
+`onDismissRequest` are required; `onDismissClick` defaults to
+`onDismissRequest`. Use `Destructive` for irreversible actions.
+```kotlin
+if (uiState.showDisconnectDialog) {
+    ElectronDialog(
+        uiModel = DialogUiModel.Destructive(
+            title = "Disconnect charger?",
+            message = "Scheduled sessions will be cancelled.",
+            confirmLabel = "Disconnect",
+            dismissLabel = "Cancel"
+        ),
+        onConfirmClick = viewModel::onDisconnectConfirmed,
+        onDismissRequest = viewModel::onDisconnectDialogDismissed
+    )
+}
+```
+
 ### ElectronScaffold
 Slot-only page frame. Any conditional content (offline, error, empty) is
 decided by the screen inside the content slot.
@@ -115,4 +181,6 @@ Adding a variant to an existing component:
 5. Add previews and an entry in the catalog.
 
 Adding a new component: copy the folder shape of `components/tag` (the
-smallest complete example) and keep the visibility rules.
+smallest complete example) and keep the visibility rules. For a composite
+component, look at `components/listitem`: its variants reuse public Electron
+components and its UI model embeds their public UI models.

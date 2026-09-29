@@ -43,6 +43,17 @@ parameter.
 | `ElectronSheetHeader` | `onCloseClick`, `onResetClick` |
 | `ElectronSwitch` | `onCheckedChange` |
 | `ElectronInputField` | `onValueChange` |
+| `ElectronCheckbox` | `onCheckedChange` |
+| `ElectronRadioButton` | `onClick` |
+| `ElectronSegmentedControl` | `onOptionSelected` (tapped index) |
+| `ElectronListItem` | `onClick` (Navigation), `onCheckedChange` (Toggle) |
+| `ElectronTopBar` | `onNavigationClick`, `onActionClick` |
+| `ElectronEmptyState` | `onPrimaryActionClick`, `onSecondaryActionClick` (Default), `onRetryClick` (Error) |
+| `ElectronDialog` | `onConfirmClick`, `onDismissRequest`, `onDismissClick` (defaults to `onDismissRequest`) |
+
+Descriptive components (`ElectronTag`, `ElectronAvatar`, `ElectronIcon`,
+`ElectronBadge`, `ElectronDivider`, `ElectronProgressIndicator`,
+`ElectronMetricCard`) emit no signal.
 
 Rules:
 - **Naming**: `on` + action, following Compose/Material conventions:
@@ -61,6 +72,23 @@ Rules:
   decides what each one means.
 - **Never in UI models**: callbacks are component parameters, never fields
   of a UI model.
+
+## Composite components
+Complex components are built from other Electron components, never from
+their internals. A variant may call a public `ElectronX` component (for
+example `ListItemToggle` renders an `ElectronSwitch`, `MetricCardFrame`
+wraps an `ElectronCard`), but it never imports another component's
+`variants` or `primitives` package. UI models follow the same rule: a
+composite model reuses public UI models as fields (`ListItemLeading.Avatar`
+holds an `AvatarUiModel`, `TopBarAction` holds a `BadgeUiModel`).
+
+| Composite | Built from |
+|---|---|
+| `ElectronListItem` | Avatar, Icon, Badge, Tag, Switch |
+| `ElectronMetricCard` | Card, Icon, Tag, ProgressIndicator |
+| `ElectronTopBar` | Icon, Badge |
+| `ElectronEmptyState` | Avatar, Button |
+| `ElectronDialog` | Avatar, Button |
 
 ## UI models (`components/*/models`)
 - Sealed classes, one subclass per variant, `@Immutable` data classes.

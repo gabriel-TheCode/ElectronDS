@@ -14,6 +14,8 @@ public object ElectronDimens {
     public val fieldHeight: Dp = 56.dp
     public val chipHeight: Dp = 34.dp
     public val sheetHeaderHeight: Dp = 56.dp
+    public val topBarHeight: Dp = 56.dp
+    public val listItemMinHeight: Dp = 56.dp
 
     // Icon sizes
     public val iconXs: Dp = 12.dp
@@ -27,6 +29,17 @@ public object ElectronDimens {
     public val avatarSm: Dp = 24.dp
     public val avatarMd: Dp = 40.dp
     public val avatarLg: Dp = 64.dp
+
+    // Badge sizes
+    public val badgeDot: Dp = 8.dp
+    public val badgeHeight: Dp = 18.dp
+
+    // Progress indicators
+    public val progressTrackHeight: Dp = 4.dp
+    public val progressStrokeWidth: Dp = 4.dp
+    public val progressCircularSm: Dp = 24.dp
+    public val progressCircularMd: Dp = 40.dp
+    public val progressCircularLg: Dp = 64.dp
 
     // Misc
     public val borderWidth: Dp = 1.dp
