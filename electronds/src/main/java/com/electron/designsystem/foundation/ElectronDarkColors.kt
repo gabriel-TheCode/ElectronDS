@@ -14,17 +14,22 @@ import com.electron.designsystem.tokens.ElectronPalette
  * - Status colors move to their lighter 400/500 steps for text contrast,
  *   and every subtle container keeps its hue (900 step) instead of
  *   collapsing to the same grey.
+ * - Fills stay deep (volt500, green700, red600, ...) with white content:
+ *   the light text steps would need near-black text on a filled button,
+ *   which reads as washed out and unexpected in a dark UI.
  */
 public val ElectronDarkColors: ElectronColors = ElectronColors(
     isDark = true,
     brand = ElectronColors.Brand(
         primary = ElectronPalette.volt400,
+        primaryFill = ElectronPalette.volt500,
         primaryStrong = ElectronPalette.volt300,
         primarySubtle = ElectronPalette.volt900,
-        onPrimary = ElectronPalette.graphite950,
+        onPrimary = ElectronPalette.graphite000,
         accent = ElectronPalette.ion400,
+        accentFill = ElectronPalette.ion800,
         accentSubtle = ElectronPalette.ion900,
-        onAccent = ElectronPalette.graphite950
+        onAccent = ElectronPalette.graphite000
     ),
     background = ElectronColors.Background(
         canvas = ElectronPalette.graphite950,
@@ -38,7 +43,7 @@ public val ElectronDarkColors: ElectronColors = ElectronColors(
         secondary = ElectronPalette.graphite300,
         muted = ElectronPalette.graphite400,
         disabled = ElectronPalette.graphite500,
-        onBrand = ElectronPalette.graphite950,
+        onBrand = ElectronPalette.graphite000,
         inverse = ElectronPalette.graphite900,
         link = ElectronPalette.volt300
     ),
@@ -50,17 +55,21 @@ public val ElectronDarkColors: ElectronColors = ElectronColors(
     ),
     status = ElectronColors.Status(
         success = ElectronPalette.green400,
+        successFill = ElectronPalette.green700,
         successSubtle = ElectronPalette.green900,
-        onSuccess = ElectronPalette.graphite950,
+        onSuccess = ElectronPalette.graphite000,
         warning = ElectronPalette.amber500,
+        warningFill = ElectronPalette.amber700,
         warningSubtle = ElectronPalette.amber900,
-        onWarning = ElectronPalette.graphite950,
+        onWarning = ElectronPalette.graphite000,
         error = ElectronPalette.red400,
+        errorFill = ElectronPalette.red600,
         errorSubtle = ElectronPalette.red900,
-        onError = ElectronPalette.graphite950,
+        onError = ElectronPalette.graphite000,
         info = ElectronPalette.blue400,
+        infoFill = ElectronPalette.blue600,
         infoSubtle = ElectronPalette.blue900,
-        onInfo = ElectronPalette.graphite950
+        onInfo = ElectronPalette.graphite000
     ),
     interaction = ElectronColors.Interaction(
         hover = ElectronPalette.whiteAlpha10,

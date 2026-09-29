@@ -30,9 +30,9 @@ internal fun primaryButtonColors(state: ButtonState, isEnabled: Boolean): Button
         return ButtonColorsResolved(c.interaction.disabledBackground, c.interaction.disabledContent, null)
     }
     return when (state) {
-        ButtonState.Default -> ButtonColorsResolved(c.brand.primary, c.brand.onPrimary, null)
-        ButtonState.Success -> ButtonColorsResolved(c.status.success, c.status.onSuccess, null)
-        ButtonState.Error -> ButtonColorsResolved(c.status.error, c.status.onError, null)
+        ButtonState.Default -> ButtonColorsResolved(c.brand.primaryFill, c.brand.onPrimary, null)
+        ButtonState.Success -> ButtonColorsResolved(c.status.successFill, c.status.onSuccess, null)
+        ButtonState.Error -> ButtonColorsResolved(c.status.errorFill, c.status.onError, null)
     }
 }
 
