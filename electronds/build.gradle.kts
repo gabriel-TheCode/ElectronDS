@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    // JVM screenshot tests (layoutlib, no emulator): see docs/SCREENSHOT_TESTS.md
+    alias(libs.plugins.paparazzi)
 }
 
 android {

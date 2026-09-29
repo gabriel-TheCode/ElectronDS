@@ -9,8 +9,10 @@ import com.electron.designsystem.foundation.ElectronTheme
 /**
  * ElectronScaffold
  *
- * Purpose: page frame with app bar, FAB and content slots, painted on the
- * Electron canvas color.
+ * Purpose: page frame with top bar, bottom bar, FAB and content slots,
+ * painted on the Electron canvas color. The bottom bar slot takes an
+ * ElectronNavigationBar in its `Bottom` variant; on tablets and TV, place
+ * the `Rail` variant beside the content instead.
  *
  * Refactor note: the legacy scaffold accepted `isNetworkConnected`
  * and swapped content for an error view internally. That is feature
@@ -30,11 +32,13 @@ import com.electron.designsystem.foundation.ElectronTheme
 public fun ElectronScaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
+    bottomBar: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
         topBar = topBar,
+        bottomBar = bottomBar,
         floatingActionButton = floatingActionButton,
         containerColor = ElectronTheme.colors.background.canvas,
         contentColor = ElectronTheme.colors.content.primary,
