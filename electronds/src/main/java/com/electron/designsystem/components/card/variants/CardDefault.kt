@@ -15,7 +15,7 @@ import com.electron.designsystem.tokens.ElectronSpacing
 
 /**
  * Default content card: optional title header, content slot, optional
- * footer action. The action label is data; the click is a callback.
+ * footer action. The action label is data; the click is a signal.
  */
 @Composable
 internal fun CardDefault(

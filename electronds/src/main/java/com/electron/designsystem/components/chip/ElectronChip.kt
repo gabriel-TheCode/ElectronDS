@@ -20,11 +20,11 @@ import com.electron.designsystem.utils.ElectronPreviewSurface
  *
  * API:
  * - [uiModel]: visual configuration (sealed [ChipUiModel]).
- * - [onClick]: emitted when the chip body is tapped.
- * - [onClear]: emitted when the clear affordance of a selected
+ * - [onClick]: signal emitted when the chip body is tapped.
+ * - [onClear]: signal emitted when the clear affordance of a selected
  *   [ChipUiModel.Filter] is tapped. Ignored by [ChipUiModel.Assist].
  *
- * Callbacks are emitted upward and never interpreted here.
+ * Signals are emitted upward and never interpreted here.
  *
  * Usage:
  * ```

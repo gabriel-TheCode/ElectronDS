@@ -15,8 +15,8 @@ import com.electron.designsystem.utils.ElectronPreviewSurface
  *
  * API:
  * - [uiModel]: visual configuration (sealed [SheetHeaderUiModel]).
- * - [onCloseClick]: emitted when the close affordance is tapped.
- * - [onResetClick]: emitted when the reset action is tapped. Only relevant
+ * - [onCloseClick]: signal emitted when the close affordance is tapped.
+ * - [onResetClick]: signal emitted when the reset action is tapped. Only relevant
  *   when the UI model provides a `resetLabel`.
  *
  * Usage:

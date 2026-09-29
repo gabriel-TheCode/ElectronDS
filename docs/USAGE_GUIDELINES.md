@@ -4,8 +4,8 @@
 
 1. Your ViewModel exposes a screen UI state.
 2. A UI mapper (pure functions) derives component UI models from that state.
-3. The screen passes UI models down and receives interactions back through
-   one dedicated callback per action (`onClick`, `onValueChange`, ...).
+3. The screen passes UI models down and signals up, through one dedicated
+   callback per interaction (`onClick`, `onValueChange`, ...).
 
 ```kotlin
 // 1. Screen state (feature module)
@@ -96,8 +96,6 @@ decided by the screen inside the content slot.
   stop you: they are internal).
 - Never put lambdas or raw `Dp`/`Color`/`FontWeight` into anything you feed
   a component; if you feel the need, request a new variant or token instead.
-- Wire each callback you need individually; never wrap several interactions
-  into a single handler with a `when` over an event type.
 - Build UI models in mappers, not inline in composables, so they are unit
   testable and preview-friendly.
 - One-off compositions (an error card with an illustration, a product tab
@@ -113,7 +111,7 @@ Adding a variant to an existing component:
    exhaustiveness).
 4. If the variant introduces a new interaction, add a dedicated callback
    parameter to the component (optional, defaulting to `{}`, if other
-   variants don't use it). Never introduce an `onSignal` callback.
+   variants don't use it).
 5. Add previews and an entry in the catalog.
 
 Adding a new component: copy the folder shape of `components/tag` (the

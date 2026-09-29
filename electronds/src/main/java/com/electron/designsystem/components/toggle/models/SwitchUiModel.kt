@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 
 /**
  * Switch UI model. Refactored from the legacy flat toggle button:
- * the component now follows the same UiModel plus callback contract as
+ * the component now follows the same UiModel plus signal contract as
  * every other Electron component.
  */
 public sealed class SwitchUiModel {

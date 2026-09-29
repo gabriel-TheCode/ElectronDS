@@ -27,12 +27,12 @@ Component) with strict, tool-enforced boundaries.
 ### Layer 3: Component (`components/*/ElectronX.kt`)
 - The single public entry point, named `Electron` + component name.
 - Dispatches exhaustively on the sealed UI model.
-- Exposes one callback parameter per interaction (see below).
+- Exposes signals upward, one callback parameter per interaction (see below).
 
-## Callbacks
-Every interaction a component can emit gets its own dedicated lambda
-parameter. There is no catch-all `onSignal: (XSignal) -> Unit` callback and
-no sealed "signal" / "event" type in the design system.
+## Signals
+A signal is a user interaction a component emits upward (a tap, a clear, a
+value change). Each signal is exposed as its own dedicated callback
+parameter.
 
 | Component | Callbacks |
 |---|---|
@@ -56,9 +56,9 @@ Rules:
   reset action that only exists when `resetLabel` is set, a clear icon only
   shown on selected Filter chips) default to `{}` and are placed after
   `modifier`.
-- **Pass-through**: variants and primitives forward the lambdas unchanged.
-  The design system never wraps, interprets or combines callbacks; the
-  screen decides what each one means.
+- **Pass-through**: variants and primitives forward the callbacks
+  unchanged. The design system never interprets a signal; the screen
+  decides what each one means.
 - **Never in UI models**: callbacks are component parameters, never fields
   of a UI model.
 
@@ -77,7 +77,7 @@ Rules:
   version exposes slots only.
 - Screens own data, meaning and event interpretation. The catalog's
   `PayeeFormSection` shows the full loop: screen UI state, UI mapper
-  producing component UI models, callbacks flowing back up.
+  producing component UI models, signals flowing back up.
 
 ## Enforcement mechanisms
 1. `explicitApi()` on the library module: every public declaration is

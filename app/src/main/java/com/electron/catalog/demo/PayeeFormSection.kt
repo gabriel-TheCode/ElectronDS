@@ -15,7 +15,7 @@ import com.electron.designsystem.tokens.ElectronSpacing
 
 /**
  * Feature-level example of the article's flow:
- * Screen UI state -> UI mapper -> Component UI model -> callbacks back up.
+ * Screen UI state -> UI mapper -> Component UI model -> signals back up.
  *
  * In a production app the state below lives in a ViewModel; a local state
  * holder keeps the catalog dependency-free while showing the same shape.

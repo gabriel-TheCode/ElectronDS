@@ -7,7 +7,7 @@ import com.electron.designsystem.components.icon.models.IconUiModel
  * Button UI models.
  *
  * Rules enforced here:
- * - No lambdas: callbacks (onClick) are passed to the component, never stored.
+ * - No lambdas: signals (onClick) are passed to the component, never stored.
  * - No raw styling values: sizes and states are semantic enums.
  * - One subclass per visual variant so the component can dispatch exhaustively.
  */
