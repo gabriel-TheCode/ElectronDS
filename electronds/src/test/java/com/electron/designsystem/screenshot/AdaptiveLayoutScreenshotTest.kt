@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -222,7 +225,10 @@ internal class AdaptiveLayoutScreenshotTest(
                 SegmentedControlUiModel.Default(options = listOf("Day", "Week", "Month"), selectedIndex = 1),
                 onOptionSelected = {}
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.md)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.md),
+                modifier = Modifier.height(IntrinsicSize.Min)
+            ) {
                 ElectronMetricCard(
                     MetricCardUiModel.Default(
                         label = "Consumption",
@@ -231,7 +237,7 @@ internal class AdaptiveLayoutScreenshotTest(
                         icon = IconUiModel.Default(Icons.Outlined.Bolt, tone = IconTone.Brand),
                         delta = MetricDelta("-8%", MetricTrend.Down, MetricSentiment.Positive)
                     ),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).fillMaxHeight()
                 )
                 ElectronMetricCard(
                     MetricCardUiModel.Progress(
@@ -242,7 +248,7 @@ internal class AdaptiveLayoutScreenshotTest(
                         tone = ProgressTone.Success,
                         icon = IconUiModel.Default(Icons.Outlined.BatteryChargingFull, tone = IconTone.Success)
                     ),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).fillMaxHeight()
                 )
             }
             ElectronCard(CardUiModel.Default(title = "Chargers", actionLabel = "See all")) {

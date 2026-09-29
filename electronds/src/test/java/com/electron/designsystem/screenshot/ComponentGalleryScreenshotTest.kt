@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -328,7 +330,10 @@ internal class ComponentGalleryScreenshotTest(private val theme: ThemeVariant) {
             ElectronDivider(DividerUiModel.Horizontal(inset = DividerInset.Start))
             ElectronListItem(ListItemUiModel.Navigation(title = "Disabled row", isEnabled = false), onClick = {})
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.md)) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.md),
+            modifier = Modifier.height(IntrinsicSize.Min)
+        ) {
             ElectronMetricCard(
                 MetricCardUiModel.Default(
                     label = "Consumption",
@@ -338,7 +343,7 @@ internal class ComponentGalleryScreenshotTest(private val theme: ThemeVariant) {
                     delta = MetricDelta("-12%", MetricTrend.Down, MetricSentiment.Positive),
                     caption = "vs last month"
                 ),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).fillMaxHeight()
             )
             ElectronMetricCard(
                 MetricCardUiModel.Progress(
@@ -349,7 +354,7 @@ internal class ComponentGalleryScreenshotTest(private val theme: ThemeVariant) {
                     tone = ProgressTone.Success,
                     icon = IconUiModel.Default(Icons.Outlined.BatteryChargingFull, tone = IconTone.Success)
                 ),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).fillMaxHeight()
             )
         }
     }
@@ -451,9 +456,12 @@ internal class ComponentGalleryScreenshotTest(private val theme: ThemeVariant) {
 
     @Test
     fun loadingAndEmptyStates() = paparazzi.electronGallery(theme) {
-        Row(horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.md)) {
-            ElectronSkeleton(SkeletonUiModel.MetricCard(), modifier = Modifier.weight(1f))
-            ElectronSkeleton(SkeletonUiModel.MetricCard(), modifier = Modifier.weight(1f))
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.md),
+            modifier = Modifier.height(IntrinsicSize.Min)
+        ) {
+            ElectronSkeleton(SkeletonUiModel.MetricCard(), modifier = Modifier.weight(1f).fillMaxHeight())
+            ElectronSkeleton(SkeletonUiModel.MetricCard(), modifier = Modifier.weight(1f).fillMaxHeight())
         }
         ElectronSkeleton(SkeletonUiModel.ListItem())
         ElectronSkeleton(SkeletonUiModel.ListItem(hasLeading = false, hasSubtitle = false))
