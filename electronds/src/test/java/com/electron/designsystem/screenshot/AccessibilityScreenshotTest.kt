@@ -40,10 +40,13 @@ import org.junit.Test
  */
 internal class AccessibilityScreenshotTest {
 
+    // NORMAL, not SHRINK: the accessibility extension draws its legend beside
+    // the content in space taken from the image width, which SHRINK sizes to
+    // the content alone (the legend would get a negative width).
     @get:Rule
     val paparazzi = Paparazzi(
         deviceConfig = DeviceVariant.Phone.config,
-        renderingMode = SessionParams.RenderingMode.SHRINK,
+        renderingMode = SessionParams.RenderingMode.NORMAL,
         showSystemUi = false,
         maxPercentDifference = MAX_PERCENT_DIFFERENCE,
         renderExtensions = setOf(AccessibilityRenderExtension())
