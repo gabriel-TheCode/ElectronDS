@@ -47,7 +47,8 @@ solutions are possible, the one that respects them wins.
 
 | Role | Light | Dark | Token |
 |---|---|---|---|
-| Primary (Volt) | #3B48D9 | #6577FF | `brand.primary` |
+| Primary (Volt), text & marks | #3B48D9 | #6577FF | `brand.primary` |
+| Primary fill (buttons, FAB) | #3B48D9 | #4C5BF5 | `brand.primaryFill` |
 | Accent (Ion) | #08766C | #2BE0CE | `brand.accent` |
 | Canvas | #F4F6FA | #0B0F1A | `background.canvas` |
 | Surface | #FFFFFF | #161B29 | `background.surface` |
@@ -64,8 +65,15 @@ Principles:
 - The raw palette (`ElectronPalette`) is internal. Features and components
   consume semantic roles only, which is what makes dark theme a pure
   remapping exercise.
-- Every status color ships with a `Subtle` container and an `on*` content
-  color, so tinted and filled treatments are always available and always AA.
+- Every hue ships a text role (`primary`, `success`, ...), a `*Fill` role, a
+  `Subtle` container and an `on*` content color, so outlined, tinted and
+  filled treatments are always available and always AA.
+- Text roles and fill roles are never the same token in dark theme. Text on
+  a dark surface needs a light step; a filled button needs a deep step with
+  white content. Using the light step as a fill forces near-black labels on
+  filled buttons, which looks washed out. So every filled component (button,
+  FAB, badge, filled tag, checked checkbox and switch) reads `*Fill`, and
+  its content is white in both themes.
 - Interaction states (hover, pressed, selected, disabled) are first-class
   roles instead of per-component alpha hacks.
 - Dark mode is a remapping, not an inversion: surfaces get lighter as they

@@ -27,9 +27,9 @@ internal fun electronSwitchColors(): SwitchColors {
     val c = ElectronTheme.colors
     return SwitchDefaults.colors(
         checkedThumbColor = c.brand.onPrimary,
-        checkedTrackColor = c.brand.primary,
-        checkedBorderColor = c.brand.primary,
-        checkedIconColor = c.brand.primary,
+        checkedTrackColor = c.brand.primaryFill,
+        checkedBorderColor = c.brand.primaryFill,
+        checkedIconColor = c.brand.primaryFill,
         uncheckedThumbColor = c.content.muted,
         uncheckedTrackColor = c.background.surfaceSunken,
         uncheckedBorderColor = c.border.strong,
