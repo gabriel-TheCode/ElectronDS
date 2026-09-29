@@ -55,6 +55,12 @@ jobs:
         if: steps.mode.outputs.record == 'true'
         run: ./gradlew :electronds:recordPaparazziDebug
 
+      # Recorded images must reproduce: a snapshot that differs on a second
+      # render (animation frame, clock, randomness) would fail every PR.
+      - name: Verify recorded snapshots reproduce
+        if: steps.mode.outputs.record == 'true'
+        run: ./gradlew :electronds:verifyPaparazziDebug
+
       - name: Commit recorded snapshots
         if: steps.mode.outputs.record == 'true' && github.event_name != 'push'
         run: |

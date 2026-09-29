@@ -49,6 +49,12 @@ Recording without a local Android SDK:
   (Actions > Screenshot tests > Run workflow) on your branch with
   **record** checked; it re-records and commits. Manual runs are available
   once the workflow file is on the default branch (a GitHub rule).
+- The recording job verifies the images it just recorded, so a
+  non-deterministic snapshot fails immediately instead of on the next PR.
+- The images are committed by `github-actions[bot]`. GitHub does not run
+  workflows automatically for that commit (its run shows "action_required"
+  until someone approves it in the Actions tab); the next regular push to
+  the branch verifies the committed images.
 
 ## Writing a new snapshot
 
