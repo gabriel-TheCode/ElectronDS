@@ -10,7 +10,12 @@ This project serves as the technical companion to the article [Building a Scalab
 
 | Light Mode | Dark Mode |
 |:---:|:---:|
-| ![Light Mode](docs/screenshots/light_mode.png) | ![Dark Mode](docs/screenshots/dark_mode.png) |
+| ![Home screen, light mode](docs/screenshots/home_light.png) | ![Home screen, dark mode](docs/screenshots/home_dark.png) |
+| ![Volt demo dashboard, light mode](docs/screenshots/dashboard_light.png) | ![Volt demo dashboard, dark mode](docs/screenshots/dashboard_dark.png) |
+
+The catalog app's home screen and the Volt demo dashboard, rendered by the
+[screenshot tests](docs/SCREENSHOT_TESTS.md). Every element is an ElectronDS
+component.
 
 ## The 3-Layer Architecture
 
