@@ -31,9 +31,11 @@ ElectronInputField(
 )
 ```
 
-The catalog app's `PayeeFormSection` is a runnable version of this loop;
-`ChargerDashboardSection` applies it to the composite components (metric
-cards, list items, segmented control, dialog).
+The catalog app's `PayeeFormSection` is a runnable version of this loop.
+The Volt demo (`app/.../demo`) applies it to a whole app with MVI:
+`DemoContract` holds the state, the intents and a pure reducer,
+`DemoMappers` turns the state into component UI models, and the tab
+composables only place components and send intents.
 
 ## Component reference
 

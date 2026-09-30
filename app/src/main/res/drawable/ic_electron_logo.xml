@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Electron logo tile: the launcher icon (background + mark) in a 12dp-radius
+  rounded square, for in-app use and pre-Oreo launchers.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <clip-path android:pathData="M12,0H36A12,12 0,0 1,48 12V36A12,12 0,0 1,36 48H12A12,12 0,0 1,0 36V12A12,12 0,0 1,12 0Z" />
+    <group
+        android:scaleX="0.44444"
+        android:scaleY="0.44444">
+        <path android:pathData="M0,0h108v108h-108z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="0"
+                    android:startY="0"
+                    android:endX="108"
+                    android:endY="108"
+                    android:startColor="#FF4C5BF5"
+                    android:endColor="#FF1E2470" />
+            </aapt:attr>
+        </path>
+        <!-- Charge glow behind the terminal. -->
+        <path android:pathData="M65.46,71m-26,0a26,26 0,1 1,52 0a26,26 0,1 1,-52 0">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="65.46"
+                    android:centerY="71"
+                    android:gradientRadius="26"
+                    android:startColor="#472BE0CE"
+                    android:endColor="#002BE0CE" />
+            </aapt:attr>
+        </path>
+        <!-- Charged terminal: the last stretch of the stroke, drawn under the white cut. -->
+        <path
+            android:pathData="M56.14,74.39A20.5,20.5 0,0 0,67.72 69.23"
+            android:strokeWidth="8"
+            android:strokeColor="#FF2BE0CE"
+            android:strokeLineCap="round" />
+        <!-- The e: crossbar, then the bowl counterclockwise, cut square where the charge begins. -->
+        <path
+            android:pathData="M33.5,54H74.5A20.5,20.5 0,1 0,58.26 74.05"
+            android:strokeWidth="8"
+            android:strokeColor="#FFFFFFFF" />
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M33.5,54m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    </group>
+</vector>
