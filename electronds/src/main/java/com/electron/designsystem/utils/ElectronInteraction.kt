@@ -9,6 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
+import com.electron.designsystem.tokens.ElectronSpacing
 
 /**
  * Shared press feedback for tappable Electron controls, so a button, a
@@ -21,6 +25,12 @@ import androidx.compose.ui.graphics.graphicsLayer
  */
 internal object ElectronInteraction {
     const val PressedScale: Float = 0.97f
+
+    /**
+     * Breathing room of a pressed/focused highlight past content that sits
+     * flush with the screen gutter (radio and checkbox rows, links).
+     */
+    val HighlightOutset: Dp = ElectronSpacing.sm
 }
 
 @Composable
@@ -37,5 +47,25 @@ internal fun Modifier.pressScale(
     return graphicsLayer {
         scaleX = scale
         scaleY = scale
+    }
+}
+
+/**
+ * Lets a row's highlight overflow [ElectronInteraction.HighlightOutset] on
+ * both sides without moving its content: the row is measured that much
+ * wider on each side but reports its original width, so the extra space
+ * spills into the surrounding gutter. Pair it with the same horizontal
+ * padding inside the clickable area.
+ */
+internal fun Modifier.highlightOutset(): Modifier = layout { measurable, constraints ->
+    val px = ElectronInteraction.HighlightOutset.roundToPx()
+    val placeable = measurable.measure(
+        constraints.copy(
+            minWidth = constraints.minWidth + 2 * px,
+            maxWidth = if (constraints.hasBoundedWidth) constraints.maxWidth + 2 * px else Constraints.Infinity
+        )
+    )
+    layout(placeable.width - 2 * px, placeable.height) {
+        placeable.place(-px, 0)
     }
 }

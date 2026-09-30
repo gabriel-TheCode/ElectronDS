@@ -15,12 +15,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import com.electron.designsystem.tokens.ElectronDimens
+import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
 
 /**
@@ -28,6 +30,10 @@ import com.electron.designsystem.tokens.ElectronSpacing
  * slot. Clickable only when [onClick] is provided; when [toggleValue] is
  * set the whole row is one toggleable node (a switch row is a single focus
  * stop for TalkBack, announced with its on/off state).
+ *
+ * The pressed/focused highlight is inset [ElectronSpacing.xs] from the
+ * container edges and rounded, like menu items, instead of a square band
+ * glued to the sides of the card. The content keeps its 16dp margins.
  *
  * The leading slot is at least one medium avatar wide, so titles line up
  * down a list whether a row starts with a 40dp avatar or a 20dp icon.
@@ -65,8 +71,10 @@ internal fun ListItemPrimitive(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = ElectronDimens.listItemMinHeight)
+            .padding(horizontal = ElectronSpacing.xs)
+            .clip(ElectronShapes.control)
             .then(clickModifier)
-            .padding(horizontal = ElectronSpacing.lg, vertical = ElectronSpacing.sm)
+            .padding(horizontal = ElectronSpacing.md, vertical = ElectronSpacing.sm)
             .testTag(testTag)
     ) {
         if (leading != null) {

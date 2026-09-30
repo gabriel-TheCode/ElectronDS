@@ -17,23 +17,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Dp
 import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
+import com.electron.designsystem.utils.ElectronInteraction
+import com.electron.designsystem.utils.highlightOutset
 
 /**
- * Radio row: the whole row is selectable, label included.
- *
- * The pressed/focused highlight has the same breathing room on both sides
- * of the content: it extends [HighlightInset] past the radio and past the
- * label. The overflow is outside the row's measured width, so the radio
- * still lines up with the rest of the screen instead of shifting inward.
+ * Radio row: the whole row is selectable, label included. The highlight
+ * overflows [ElectronInteraction.HighlightOutset] on both sides, so the
+ * radio stays aligned with the rest of the screen.
  */
 @Composable
 internal fun RadioButtonPrimitive(
@@ -51,7 +47,7 @@ internal fun RadioButtonPrimitive(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .outsetHorizontally(HighlightInset)
+            .highlightOutset()
             .defaultMinSize(minHeight = ElectronDimens.minTouchTarget)
             .clip(ElectronShapes.control)
             .selectable(
@@ -62,7 +58,7 @@ internal fun RadioButtonPrimitive(
                 role = Role.RadioButton,
                 onClick = onClick
             )
-            .padding(horizontal = HighlightInset)
+            .padding(horizontal = ElectronInteraction.HighlightOutset)
             .testTag(testTag)
     ) {
         RadioButton(
@@ -78,21 +74,3 @@ internal fun RadioButtonPrimitive(
     }
 }
 
-private val HighlightInset: Dp = ElectronSpacing.sm
-
-/**
- * Measures the content [outset] wider on each side and reports the original
- * width, so the extra space overflows into the surrounding gutter.
- */
-private fun Modifier.outsetHorizontally(outset: Dp): Modifier = layout { measurable, constraints ->
-    val px = outset.roundToPx()
-    val placeable = measurable.measure(
-        constraints.copy(
-            minWidth = constraints.minWidth + 2 * px,
-            maxWidth = if (constraints.hasBoundedWidth) constraints.maxWidth + 2 * px else Constraints.Infinity
-        )
-    )
-    layout(placeable.width - 2 * px, placeable.height) {
-        placeable.place(-px, 0)
-    }
-}

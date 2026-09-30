@@ -9,6 +9,7 @@ import com.electron.designsystem.components.button.models.ButtonState
 import com.electron.designsystem.foundation.ElectronTheme
 import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronSpacing
+import com.electron.designsystem.utils.ElectronInteraction
 
 /**
  * Internal styling resolution for button variants.
@@ -74,8 +75,12 @@ internal fun ButtonSize.height(): Dp = when (this) {
     ButtonSize.Large -> ElectronDimens.controlHeightLg
 }
 
-/** Links sit inline with text: no horizontal padding, so their text aligns with the copy around them. */
-internal val LinkContentPadding: PaddingValues = PaddingValues(horizontal = ElectronSpacing.none)
+/**
+ * Links sit inline with text: this padding is offset by the link's highlight
+ * outset, so the text aligns with the copy around it and the highlight gets
+ * room on both sides.
+ */
+internal val LinkContentPadding: PaddingValues = PaddingValues(horizontal = ElectronInteraction.HighlightOutset)
 
 internal fun ButtonSize.contentPadding(): PaddingValues = when (this) {
     ButtonSize.Small -> PaddingValues(horizontal = ElectronSpacing.md)
