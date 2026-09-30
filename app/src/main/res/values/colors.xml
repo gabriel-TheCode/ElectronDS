@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ElectronDS canvas (graphite050), so the splash hands over to the home screen without a flash. -->
+    <color name="splash_background">#FFF4F6FA</color>
+</resources>

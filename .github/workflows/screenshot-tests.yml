@@ -36,12 +36,17 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      # Record when asked to, or when no golden image exists yet (first run
-      # on a new setup); otherwise verify against the committed images.
+      # The catalog app must build (manifest, resources, splash theme), not
+      # only compile for the unit tests.
+      - name: Build the catalog app
+        run: ./gradlew :app:assembleDebug
+
+      # Record when asked to, or when a module has no golden image yet (first
+      # run on a new setup); otherwise verify against the committed images.
       - name: Choose mode
         id: mode
         run: |
-          if [ "${{ inputs.record }}" = "true" ] || [ -z "$(ls -A electronds/src/test/snapshots/images 2>/dev/null)" ]; then
+          if [ "${{ inputs.record }}" = "true" ] || [ -z "$(ls -A electronds/src/test/snapshots/images 2>/dev/null)" ] || [ -z "$(ls -A app/src/test/snapshots/images 2>/dev/null)" ]; then
             echo "record=true" >> "$GITHUB_OUTPUT"
           else
             echo "record=false" >> "$GITHUB_OUTPUT"
@@ -49,24 +54,24 @@ jobs:
 
       - name: Verify snapshots
         if: steps.mode.outputs.record != 'true'
-        run: ./gradlew :electronds:verifyPaparazziDebug
+        run: ./gradlew verifyPaparazziDebug
 
       - name: Record snapshots
         if: steps.mode.outputs.record == 'true'
-        run: ./gradlew :electronds:recordPaparazziDebug
+        run: ./gradlew recordPaparazziDebug
 
       # Recorded images must reproduce: a snapshot that differs on a second
       # render (animation frame, clock, randomness) would fail every PR.
       - name: Verify recorded snapshots reproduce
         if: steps.mode.outputs.record == 'true'
-        run: ./gradlew :electronds:verifyPaparazziDebug
+        run: ./gradlew verifyPaparazziDebug
 
       - name: Commit recorded snapshots
         if: steps.mode.outputs.record == 'true' && github.event_name != 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add electronds/src/test/snapshots
+          git add electronds/src/test/snapshots app/src/test/snapshots
           if git diff --cached --quiet; then
             echo "Snapshots unchanged."
           else
@@ -82,3 +87,5 @@ jobs:
           path: |
             electronds/build/paparazzi/failures
             electronds/build/reports/tests
+            app/build/paparazzi/failures
+            app/build/reports/tests

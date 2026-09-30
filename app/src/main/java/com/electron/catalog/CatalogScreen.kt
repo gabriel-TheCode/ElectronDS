@@ -2,18 +2,20 @@ package com.electron.catalog
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Bolt
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,9 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.electron.catalog.demo.ChargerDashboardSection
 import com.electron.catalog.demo.PayeeFormSection
 import com.electron.designsystem.components.avatar.ElectronAvatar
 import com.electron.designsystem.components.avatar.models.AvatarSize
@@ -41,26 +41,45 @@ import com.electron.designsystem.components.fab.ElectronFab
 import com.electron.designsystem.components.fab.models.FabUiModel
 import com.electron.designsystem.components.sheetheader.ElectronSheetHeader
 import com.electron.designsystem.components.sheetheader.models.SheetHeaderUiModel
-import com.electron.designsystem.components.toggle.ElectronSwitch
-import com.electron.designsystem.components.toggle.models.SwitchUiModel
 import com.electron.designsystem.components.tag.ElectronTag
 import com.electron.designsystem.components.tag.models.TagStyle
 import com.electron.designsystem.components.tag.models.TagTone
 import com.electron.designsystem.components.tag.models.TagUiModel
+import com.electron.designsystem.components.topbar.ElectronTopBar
+import com.electron.designsystem.components.topbar.models.TopBarAction
+import com.electron.designsystem.components.topbar.models.TopBarNavigation
+import com.electron.designsystem.components.topbar.models.TopBarUiModel
 import com.electron.designsystem.foundation.ElectronTheme
 import com.electron.designsystem.layout.ElectronScaffold
 import com.electron.designsystem.tokens.ElectronSpacing
 
 /**
- * Component catalog. Feature-level code: it owns meaning and interaction,
- * the design system owns rendering.
+ * Component catalog: every component, variant and state, live. Feature-level
+ * code: it owns meaning and interaction, the design system owns rendering.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun CatalogScreen(
     isDarkTheme: Boolean,
-    onThemeToggled: (Boolean) -> Unit
+    onThemeToggled: (Boolean) -> Unit,
+    onBackClick: () -> Unit
 ) {
     ElectronScaffold(
+        topBar = {
+            ElectronTopBar(
+                uiModel = TopBarUiModel.Large(
+                    title = "Components",
+                    navigation = TopBarNavigation.Back,
+                    navigationContentDescription = "Back to home",
+                    action = TopBarAction(
+                        icon = if (isDarkTheme) Icons.Outlined.LightMode else Icons.Outlined.DarkMode,
+                        contentDescription = if (isDarkTheme) "Switch to light theme" else "Switch to dark theme"
+                    )
+                ),
+                onNavigationClick = onBackClick,
+                onActionClick = { onThemeToggled(!isDarkTheme) }
+            )
+        },
         floatingActionButton = {
             ElectronFab(
                 uiModel = FabUiModel.Extended(text = "New", icon = Icons.Outlined.Add),
@@ -72,34 +91,13 @@ fun CatalogScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                // The scaffold already applied the system bars: showcased top
+                // bars inside the list must not pad for them again.
+                .consumeWindowInsets(padding)
                 .padding(horizontal = ElectronSpacing.lg)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(ElectronSpacing.lg)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = ElectronSpacing.lg)
-            ) {
-                Text(
-                    text = "ElectronDS",
-                    style = ElectronTheme.typography.headlineLarge,
-                    color = ElectronTheme.colors.content.primary,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(
-                    text = "Dark",
-                    style = ElectronTheme.typography.labelMedium,
-                    color = ElectronTheme.colors.content.secondary
-                )
-                Spacer(modifier = Modifier.width(ElectronSpacing.sm))
-                ElectronSwitch(
-                    uiModel = SwitchUiModel.Default(isChecked = isDarkTheme),
-                    onCheckedChange = onThemeToggled
-                )
-            }
-
             SectionTitle("Buttons")
             ElectronButton(ButtonUiModel.Primary(text = "Primary", isFullWidth = true), onClick = {})
             ElectronButton(ButtonUiModel.Secondary(text = "Secondary", isFullWidth = true), onClick = {})
@@ -184,9 +182,6 @@ fun CatalogScreen(
 
             SectionTitle("Feature example: payee form")
             PayeeFormSection()
-
-            SectionTitle("Feature example: charger dashboard")
-            ChargerDashboardSection()
 
             Spacer(modifier = Modifier.height(ElectronSpacing.huge))
         }

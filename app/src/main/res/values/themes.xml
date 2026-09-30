@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.ElectronCatalog" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Launch theme: system splash screen with the logo on the canvas color. -->
+    <style name="Theme.ElectronCatalog.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.ElectronCatalog</item>
+    </style>
 </resources>
