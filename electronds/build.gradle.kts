@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    // JVM screenshot tests (layoutlib, no emulator): see docs/SCREENSHOT_TESTS.md
+    alias(libs.plugins.paparazzi)
 }
 
 android {
@@ -30,6 +32,16 @@ android {
 // tokens leave this module. explicitApi keeps the public surface honest.
 kotlin {
     explicitApi()
+}
+
+// Print full failure causes in CI logs (Paparazzi wraps render errors).
+tasks.withType<Test>().configureEach {
+    testLogging {
+        events("failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showCauses = true
+        showStackTraces = true
+    }
 }
 
 dependencies {

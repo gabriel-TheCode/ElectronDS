@@ -1,0 +1,84 @@
+name: Screenshot tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      record:
+        description: "Record new golden images and commit them to the branch"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: screenshot-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  paparazzi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # On pull requests, check out the head branch (not the merge commit) so
+      # recorded images can be committed back to it.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Record when asked to, or when no golden image exists yet (first run
+      # on a new setup); otherwise verify against the committed images.
+      - name: Choose mode
+        id: mode
+        run: |
+          if [ "${{ inputs.record }}" = "true" ] || [ -z "$(ls -A electronds/src/test/snapshots/images 2>/dev/null)" ]; then
+            echo "record=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "record=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Verify snapshots
+        if: steps.mode.outputs.record != 'true'
+        run: ./gradlew :electronds:verifyPaparazziDebug
+
+      - name: Record snapshots
+        if: steps.mode.outputs.record == 'true'
+        run: ./gradlew :electronds:recordPaparazziDebug
+
+      # Recorded images must reproduce: a snapshot that differs on a second
+      # render (animation frame, clock, randomness) would fail every PR.
+      - name: Verify recorded snapshots reproduce
+        if: steps.mode.outputs.record == 'true'
+        run: ./gradlew :electronds:verifyPaparazziDebug
+
+      - name: Commit recorded snapshots
+        if: steps.mode.outputs.record == 'true' && github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add electronds/src/test/snapshots
+          if git diff --cached --quiet; then
+            echo "Snapshots unchanged."
+          else
+            git commit -m "Record Paparazzi golden images"
+            git push origin HEAD:${{ github.head_ref || github.ref_name }}
+          fi
+
+      - name: Upload visual diffs and test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: paparazzi-failures
+          path: |
+            electronds/build/paparazzi/failures
+            electronds/build/reports/tests

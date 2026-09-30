@@ -125,6 +125,7 @@ ElectronChip(
 - [Architecture Deep Dive](docs/ARCHITECTURE.md) - The rules of the 3-layer system.
 - [Design Decisions](docs/DESIGN_DECISIONS.md) - Rationale behind colors, type, and motion.
 - [Usage Guidelines](docs/USAGE_GUIDELINES.md) - Best practices for feature teams.
+- [Screenshot Tests](docs/SCREENSHOT_TESTS.md) - Visual regression tests (Paparazzi) and how to record them.
 
 ---
 
