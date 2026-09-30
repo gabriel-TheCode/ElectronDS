@@ -22,7 +22,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.electron.designsystem.foundation.ElectronTheme
 import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronShapes
-import com.electron.designsystem.utils.focusRing
 import com.electron.designsystem.utils.pressScale
 
 /**
@@ -127,7 +126,6 @@ internal fun ChipPrimitive(
         modifier = modifier
             .height(ElectronDimens.chipHeight)
             .pressScale(interactionSource, enabled = isEnabled)
-            .focusRing(interactionSource, ElectronShapes.pill)
             .testTag(testTag)
     )
 }

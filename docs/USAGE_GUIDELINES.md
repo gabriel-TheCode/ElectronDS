@@ -168,7 +168,7 @@ if (uiState.showDisconnectDialog) {
 ### ElectronBottomSheet
 Compose it behind a state flag, like a dialog. With a `title`, the sheet
 shows an ElectronSheetHeader whose close button slides the sheet out
-before `onDismissRequest` fires. Width is capped at 640dp on tablets/TV.
+before `onDismissRequest` fires. Width is capped at 640dp on tablets.
 
 ### ElectronTabs / ElectronSegmentedControl
 Tabs switch between sibling views of a screen (Overview / History);
@@ -178,8 +178,7 @@ their labels and keep the selected tab in view.
 
 ### ElectronNavigationBar
 3 to 5 top-level destinations. Use `Bottom` on compact widths and `Rail`
-on medium and expanded widths (tablets, TV): a bottom bar on a TV forces
-the D-pad on a long horizontal trip. Provide `selectedIcon` (filled glyph)
+on medium and expanded widths (tablets). Provide `selectedIcon` (filled glyph)
 so the active destination differs by shape, not only color.
 
 ### ElectronMenu / ElectronDropdown

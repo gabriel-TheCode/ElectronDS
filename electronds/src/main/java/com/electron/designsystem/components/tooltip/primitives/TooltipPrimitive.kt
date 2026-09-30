@@ -92,7 +92,7 @@ internal fun RichTooltipSurface(
 /**
  * Anchors a tooltip to [content] with Material's TooltipBox, which owns
  * positioning and triggers (long-press on touch, hover with a mouse,
- * focus with a keyboard or D-pad). Only the surfaces are Electron's.
+ * focus with a keyboard). Only the surfaces are Electron's.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

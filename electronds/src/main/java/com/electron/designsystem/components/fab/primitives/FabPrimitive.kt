@@ -16,7 +16,6 @@ import com.electron.designsystem.foundation.ElectronTheme
 import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronElevation
 import com.electron.designsystem.tokens.ElectronShapes
-import com.electron.designsystem.utils.focusRing
 import com.electron.designsystem.utils.pressScale
 
 @Composable
@@ -49,7 +48,6 @@ internal fun ExtendedFabPrimitive(
         text = { Text(text = text, style = ElectronTheme.typography.labelLarge) },
         modifier = modifier
             .pressScale(interactionSource)
-            .focusRing(interactionSource, ElectronShapes.pill)
             .testTag(testTag)
     )
 }
@@ -73,7 +71,6 @@ internal fun CompactFabPrimitive(
         elevation = FloatingActionButtonDefaults.elevation(ElectronElevation.floating),
         modifier = modifier
             .pressScale(interactionSource)
-            .focusRing(interactionSource, ElectronShapes.pill)
             .testTag(testTag)
     ) {
         Icon(

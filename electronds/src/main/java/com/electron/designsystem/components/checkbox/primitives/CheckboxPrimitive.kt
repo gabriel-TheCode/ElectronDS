@@ -23,7 +23,6 @@ import androidx.compose.ui.text.TextStyle
 import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
-import com.electron.designsystem.utils.focusRing
 
 /**
  * Checkbox row: the whole row toggles, so the label is part of the touch
@@ -47,7 +46,6 @@ internal fun CheckboxPrimitive(
         modifier = modifier
             .defaultMinSize(minHeight = ElectronDimens.minTouchTarget)
             .clip(ElectronShapes.control)
-            .focusRing(interactionSource, ElectronShapes.control)
             .toggleable(
                 value = isChecked,
                 interactionSource = interactionSource,

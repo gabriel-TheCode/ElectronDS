@@ -31,7 +31,6 @@ import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronMotion
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
-import com.electron.designsystem.utils.focusRing
 import com.electron.designsystem.utils.pressScale
 
 /**
@@ -49,7 +48,7 @@ import com.electron.designsystem.utils.pressScale
  *
  * Feedback: colors cross-fade when the state changes (Default to Success
  * after a save reads as a transformation, not a flash), the button scales
- * down under the finger and shows a focus ring for keyboard and TV.
+ * down under the finger.
  *
  * The icon always takes the button's content color (the model's tone is
  * ignored here): an icon and its label are one action and must never be
@@ -110,7 +109,6 @@ internal fun ButtonPrimitive(
         modifier = widthModifier
             .heightIn(min = height)
             .pressScale(interactionSource, enabled = isInteractive)
-            .focusRing(interactionSource, ElectronShapes.control)
             .testTag(testTag)
     ) {
         if (isLoading) {

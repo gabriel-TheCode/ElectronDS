@@ -24,7 +24,7 @@ import com.electron.designsystem.utils.ElectronPreviewSurface
  *
  * Purpose: top-level navigation between 3 to 5 destinations, as a bottom
  * bar ([NavigationBarUiModel.Bottom]) on phones or a rail
- * ([NavigationBarUiModel.Rail]) on tablets and TV. The screen owns the
+ * ([NavigationBarUiModel.Rail]) on tablets. The screen owns the
  * selected index and reacts to [onItemSelected], which carries the tapped
  * index. Destinations can carry an ElectronBadge.
  *

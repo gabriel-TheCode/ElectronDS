@@ -42,7 +42,6 @@ import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronMotion
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
-import com.electron.designsystem.utils.focusRing
 import com.electron.designsystem.utils.pressScale
 
 internal data class NavigationColors(
@@ -59,8 +58,8 @@ internal data class NavigationColors(
  * One destination: an icon inside an indicator pill, label below. The pill
  * grows from icon width to full width when selected and fades its tint in,
  * so the selection visibly moves to the new item. The whole cell is the
- * touch target; the press scale and focus ring apply to the pill, which is
- * where the eye is.
+ * touch target; the press scale applies to the pill, which is where the
+ * eye is.
  */
 @Composable
 internal fun NavigationItemPrimitive(
@@ -113,7 +112,6 @@ internal fun NavigationItemPrimitive(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .pressScale(interactionSource)
-                .focusRing(interactionSource, ElectronShapes.pill)
                 .size(ElectronDimens.navigationIndicatorWidth, ElectronDimens.navigationIndicatorHeight)
         ) {
             Box(
@@ -180,7 +178,7 @@ internal fun BottomNavigationPrimitive(
     }
 }
 
-/** Rail: items stacked from the top, for tablets and TV (D-pad moves vertically). */
+/** Rail: items stacked from the top, for tablets. */
 @Composable
 internal fun RailNavigationPrimitive(
     colors: NavigationColors,

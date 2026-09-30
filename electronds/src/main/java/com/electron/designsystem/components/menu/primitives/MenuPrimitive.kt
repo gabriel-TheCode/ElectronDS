@@ -174,7 +174,7 @@ internal fun MenuItemPrimitive(
  * Popup host. Stays composed while the exit animation runs, then leaves
  * composition. Enters with a short fade + 4% scale from the top-start
  * corner (it unfolds from its anchor) and exits faster than it enters.
- * The popup is focusable so the D-pad and the keyboard move into it.
+ * The popup is focusable so a hardware keyboard moves into it.
  */
 @Composable
 internal fun MenuPopup(

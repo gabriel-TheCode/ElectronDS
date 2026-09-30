@@ -73,7 +73,7 @@ public object ElectronDimens {
     public val skeletonLine: Dp = 12.dp
 
     // Layout
-    /** Maximum width of centered reading content (empty states, messages) on tablets and TV. */
+    /** Maximum width of centered reading content (empty states, messages) on tablets. */
     public val readableWidth: Dp = 400.dp
 
     // Misc

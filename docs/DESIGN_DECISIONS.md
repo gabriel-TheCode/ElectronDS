@@ -32,7 +32,7 @@ solutions are possible, the one that respects them wins.
    48dp with the same radius, so forms line up without per-screen fixes.
    Everything sits on the 4dp grid.
 5. **Every state is explicit, and never color alone.** Pressed scales,
-   focused rings, checked switches carry a check glyph, errors carry an
+   checked switches carry a check glyph, errors carry an
    icon and a message, disabled looks the same on every control.
 6. **Motion explains a change.** Colors cross-fade (quick), things that
    move slide on a spring (segmented indicator), new values roll in
@@ -40,8 +40,7 @@ solutions are possible, the one that respects them wins.
    accelerate. Nothing animates for decoration.
 7. **Readable everywhere.** Every text role meets WCAG AA (4.5:1) on both
    canvas and surface in both themes. Centered reading content is capped
-   at `readableWidth` for tablets and TV. Every focusable control shows a
-   focus ring for keyboard and D-pad users.
+   at `readableWidth` on tablets.
 
 ### Color system
 
@@ -124,15 +123,19 @@ decisive, like a circuit closing, and only explains a change:
 |---|---|
 | State color (button Default to Success, field focus) | cross-fade, `quick`, `easeStandard` |
 | Press | 3% scale-down, critically damped spring |
-| Focus | 2dp `border.focus` ring, `instant` |
 | Position (segmented indicator) | spring, no bounce |
 | New value (badge count, metric figure) | vertical roll, `easeEnter` in, `easeExit` out |
 | Appearing message (field error/helper) | fade in with animated height |
-| Progress value | glide over `standard` |
+| Progress value | glide over `standard` on a single pill gauge (no gap, no end dot) |
 
-Press and focus feedback are shared by every tappable control through
-`utils/ElectronInteraction.kt`, so a button, a chip, a segment and the FAB
-answer the same way. Full-width rows (list items) keep the ripple only:
+Press feedback is shared by tappable controls through
+`utils/ElectronInteraction.kt`, so a button, a chip and the FAB answer the
+same way. The segmented control is one gesture instead: the whole 48dp
+height and the gaps are touch area, the pressed segment is tinted, the
+finger can slide between segments (dragging the indicator when it starts
+on the selected one), and the choice is committed on release with a
+haptic tick. Focus keeps Material's own soft state layer, clipped
+to each control's shape: no outline is drawn on top of the components. Full-width rows (list items) keep the ripple only:
 scaling a full-width surface reads as layout jitter.
 
 ## Architectural decisions

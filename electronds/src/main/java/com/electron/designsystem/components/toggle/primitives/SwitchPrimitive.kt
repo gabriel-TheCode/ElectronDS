@@ -1,6 +1,5 @@
 package com.electron.designsystem.components.toggle.primitives
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
@@ -9,13 +8,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.electron.designsystem.foundation.ElectronTheme
 import com.electron.designsystem.tokens.ElectronDimens
-import com.electron.designsystem.tokens.ElectronShapes
-import com.electron.designsystem.utils.focusRing
 
 /**
  * Off is an outlined, sunken track with a muted thumb; on is a filled
@@ -51,13 +47,11 @@ internal fun SwitchPrimitive(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     Switch(
         checked = isChecked,
         enabled = isEnabled,
         onCheckedChange = onCheckedChange,
         colors = electronSwitchColors(),
-        interactionSource = interactionSource,
         thumbContent = if (isChecked) {
             {
                 Icon(
@@ -70,7 +64,6 @@ internal fun SwitchPrimitive(
             null
         },
         modifier = modifier
-            .focusRing(interactionSource, ElectronShapes.pill)
             .testTag(testTag)
     )
 }
