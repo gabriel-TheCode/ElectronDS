@@ -64,10 +64,12 @@ The single public entry point. It dispatches on a sealed UI model class and expo
 | Category | Components |
 |---|---|
 | Actions | `ElectronButton`, `ElectronFab`, `ElectronChip` |
-| Inputs & selection | `ElectronInputField`, `ElectronSwitch`, `ElectronCheckbox`, `ElectronRadioButton`, `ElectronSegmentedControl` |
-| Display | `ElectronIcon`, `ElectronAvatar`, `ElectronTag`, `ElectronBadge`, `ElectronDivider`, `ElectronProgressIndicator` |
+| Inputs & selection | `ElectronInputField`, `ElectronDropdown`, `ElectronSwitch`, `ElectronCheckbox`, `ElectronRadioButton`, `ElectronSegmentedControl`, `ElectronSlider` |
+| Display | `ElectronIcon`, `ElectronAvatar`, `ElectronTag`, `ElectronBadge`, `ElectronDivider`, `ElectronProgressIndicator`, `ElectronSkeleton` |
 | Containers | `ElectronCard`, `ElectronSheetHeader`, `ElectronScaffold` |
-| Composites | `ElectronListItem`, `ElectronMetricCard`, `ElectronTopBar`, `ElectronEmptyState`, `ElectronDialog` |
+| Navigation | `ElectronTopBar`, `ElectronTabs`, `ElectronNavigationBar` (bottom bar / rail) |
+| Overlays | `ElectronDialog`, `ElectronBottomSheet`, `ElectronMenu`, `ElectronTooltip` |
+| Composites | `ElectronListItem`, `ElectronMetricCard`, `ElectronEmptyState` |
 
 Composites are built only from other public Electron components, following the same 3-layer rules.
 

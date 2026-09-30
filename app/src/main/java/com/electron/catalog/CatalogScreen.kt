@@ -167,6 +167,21 @@ fun CatalogScreen(
             SectionTitle("Empty states")
             EmptyStateShowcase()
 
+            SectionTitle("Tabs")
+            TabsShowcase()
+
+            SectionTitle("Navigation")
+            NavigationShowcase()
+
+            SectionTitle("Menus, dropdowns, sheets & tooltips")
+            OverlaysShowcase()
+
+            SectionTitle("Sliders")
+            SliderShowcase()
+
+            SectionTitle("Loading skeletons")
+            SkeletonShowcase()
+
             SectionTitle("Feature example: payee form")
             PayeeFormSection()
 

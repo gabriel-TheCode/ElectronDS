@@ -23,6 +23,9 @@ public object ElectronMotion {
     public const val standard: Int = 240
     public const val emphasized: Int = 400
 
+    /** Period of ambient loops that signal "still working" (skeleton shimmer). */
+    public const val ambient: Int = 1400
+
     public val easeStandard: Easing = CubicBezierEasing(0.2f, 0f, 0f, 1f)
     public val easeEnter: Easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
     public val easeExit: Easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)

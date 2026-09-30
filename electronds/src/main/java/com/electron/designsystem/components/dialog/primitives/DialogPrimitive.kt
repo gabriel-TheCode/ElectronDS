@@ -23,14 +23,15 @@ import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
 
 /**
- * Modal surface: optional visual, title, message and an end-aligned
- * actions row. [onDismissRequest] fires on back press or scrim tap.
+ * Dialog surface: optional visual, title, message and an end-aligned
+ * actions row. Rendered inside [DialogWindowPrimitive] at runtime and on
+ * its own in previews and screenshot tests.
  *
  * Rhythm: title and message are one statement (sm apart); the actions are
  * the answer and sit clearly apart (xl), so the eye reads, then decides.
  */
 @Composable
-internal fun DialogPrimitive(
+internal fun DialogSurface(
     title: String,
     titleStyle: TextStyle,
     titleColor: Color,
@@ -39,34 +40,40 @@ internal fun DialogPrimitive(
     messageColor: Color,
     containerColor: Color,
     testTag: String,
-    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     visual: (@Composable () -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit
 ) {
-    Dialog(onDismissRequest = onDismissRequest) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .shadow(ElectronElevation.overlay, ElectronShapes.dialog)
-                .background(containerColor, ElectronShapes.dialog)
-                .padding(ElectronSpacing.xl)
-                .testTag(testTag)
-        ) {
-            if (visual != null) {
-                visual()
-                Spacer(modifier = Modifier.height(ElectronSpacing.lg))
-            }
-            Text(text = title, style = titleStyle, color = titleColor)
-            Spacer(modifier = Modifier.height(ElectronSpacing.sm))
-            Text(text = message, style = messageStyle, color = messageColor)
-            Spacer(modifier = Modifier.height(ElectronSpacing.xl))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.sm, Alignment.End),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
-                content = actions
-            )
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(ElectronElevation.overlay, ElectronShapes.dialog)
+            .background(containerColor, ElectronShapes.dialog)
+            .padding(ElectronSpacing.xl)
+            .testTag(testTag)
+    ) {
+        if (visual != null) {
+            visual()
+            Spacer(modifier = Modifier.height(ElectronSpacing.lg))
         }
+        Text(text = title, style = titleStyle, color = titleColor)
+        Spacer(modifier = Modifier.height(ElectronSpacing.sm))
+        Text(text = message, style = messageStyle, color = messageColor)
+        Spacer(modifier = Modifier.height(ElectronSpacing.xl))
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.sm, Alignment.End),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+            content = actions
+        )
     }
+}
+
+/** Modal window; [onDismissRequest] fires on back press or scrim tap. */
+@Composable
+internal fun DialogWindowPrimitive(
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Dialog(onDismissRequest = onDismissRequest, content = content)
 }

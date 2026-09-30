@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -52,7 +53,8 @@ import com.electron.designsystem.utils.pressScale
  *
  * The icon always takes the button's content color (the model's tone is
  * ignored here): an icon and its label are one action and must never be
- * two colors.
+ * two colors. An icon-only button is square (width = height, no padding)
+ * instead of inheriting the text padding and looking stretched.
  */
 @Composable
 internal fun ButtonPrimitive(
@@ -73,7 +75,12 @@ internal fun ButtonPrimitive(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isInteractive = isEnabled && !isLoading
-    val widthModifier = if (isFullWidth) modifier.fillMaxWidth() else modifier
+    val isIconOnly = text.isNullOrEmpty() && icon != null && !isLoading
+    val widthModifier = when {
+        isFullWidth -> modifier.fillMaxWidth()
+        isIconOnly -> modifier.widthIn(min = height)
+        else -> modifier
+    }
 
     val background by animateColorAsState(
         targetValue = backgroundColor,
@@ -98,7 +105,7 @@ internal fun ButtonPrimitive(
             disabledContentColor = content
         ),
         elevation = null,
-        contentPadding = contentPadding,
+        contentPadding = if (isIconOnly) PaddingValues(ElectronSpacing.none) else contentPadding,
         interactionSource = interactionSource,
         modifier = widthModifier
             .heightIn(min = height)

@@ -45,6 +45,33 @@ public object ElectronDimens {
     public val progressCircularMd: Dp = 40.dp
     public val progressCircularLg: Dp = 64.dp
 
+    // Bottom sheet
+    public val sheetHandleWidth: Dp = 32.dp
+    public val sheetHandleHeight: Dp = 4.dp
+
+    // Tabs and navigation
+    public val tabHeight: Dp = 48.dp
+    public val tabIndicatorHeight: Dp = 3.dp
+    /** Fits an item: 8 padding + 32 indicator + 4 gap + 16 label + 8 padding (68), on the grid. */
+    public val navigationBarHeight: Dp = 72.dp
+    public val navigationRailWidth: Dp = 80.dp
+    public val navigationIndicatorWidth: Dp = 56.dp
+    public val navigationIndicatorHeight: Dp = 32.dp
+
+    // Menus and tooltips
+    public val menuMinWidth: Dp = 160.dp
+    public val menuMaxWidth: Dp = 320.dp
+    public val menuItemHeight: Dp = 48.dp
+    public val tooltipMaxWidth: Dp = 280.dp
+
+    // Slider
+    public val sliderTrackHeight: Dp = 4.dp
+    public val sliderThumb: Dp = 20.dp
+    public val sliderTick: Dp = 4.dp
+
+    // Skeleton
+    public val skeletonLine: Dp = 12.dp
+
     // Layout
     /** Maximum width of centered reading content (empty states, messages) on tablets and TV. */
     public val readableWidth: Dp = 400.dp
