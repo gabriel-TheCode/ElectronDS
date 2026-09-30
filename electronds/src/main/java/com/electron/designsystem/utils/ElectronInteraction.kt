@@ -28,9 +28,11 @@ internal object ElectronInteraction {
 
     /**
      * Breathing room of a pressed/focused highlight past content that sits
-     * flush with the screen gutter (radio and checkbox rows, links).
+     * flush with the screen gutter (radio and checkbox rows, links). 12dp
+     * matches the space above and below a 24dp control in its 48dp touch
+     * height, so the highlight has the same margin on all four sides.
      */
-    val HighlightOutset: Dp = ElectronSpacing.sm
+    val HighlightOutset: Dp = ElectronSpacing.md
 }
 
 @Composable

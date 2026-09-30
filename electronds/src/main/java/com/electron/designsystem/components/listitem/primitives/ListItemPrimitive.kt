@@ -31,9 +31,11 @@ import com.electron.designsystem.tokens.ElectronSpacing
  * set the whole row is one toggleable node (a switch row is a single focus
  * stop for TalkBack, announced with its on/off state).
  *
- * The pressed/focused highlight is inset [ElectronSpacing.xs] from the
- * container edges and rounded, like menu items, instead of a square band
- * glued to the sides of the card. The content keeps its 16dp margins.
+ * Spacing: the content sits 16dp from every edge of the row, top and
+ * bottom as well as the sides, so a row at the bottom of a card leaves the
+ * same space below as the card header leaves above. The pressed/focused
+ * highlight is inset [ElectronSpacing.xs] on all four sides and rounded,
+ * like menu items, so it floats evenly inside the card.
  *
  * The leading slot is at least one medium avatar wide, so titles line up
  * down a list whether a row starts with a 40dp avatar or a 20dp icon.
@@ -71,10 +73,10 @@ internal fun ListItemPrimitive(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = ElectronDimens.listItemMinHeight)
-            .padding(horizontal = ElectronSpacing.xs)
+            .padding(ElectronSpacing.xs)
             .clip(ElectronShapes.control)
             .then(clickModifier)
-            .padding(horizontal = ElectronSpacing.md, vertical = ElectronSpacing.sm)
+            .padding(ElectronSpacing.md)
             .testTag(testTag)
     ) {
         if (leading != null) {

@@ -37,7 +37,7 @@ internal fun SkeletonListItem(uiModel: SkeletonUiModel.ListItem, modifier: Modif
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = ElectronDimens.listItemMinHeight)
-            .padding(horizontal = ElectronSpacing.lg, vertical = ElectronSpacing.sm)
+            .padding(ElectronSpacing.lg)
             .skeletonSemantics(uiModel.contentDescription)
             .testTag(uiModel.testTag)
     ) {
