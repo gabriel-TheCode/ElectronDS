@@ -23,10 +23,14 @@ import androidx.compose.ui.text.TextStyle
 import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
+import com.electron.designsystem.utils.ElectronInteraction
+import com.electron.designsystem.utils.highlightOutset
 
 /**
  * Checkbox row: the whole row toggles, so the label is part of the touch
- * target and screen readers announce a single checkbox.
+ * target and screen readers announce a single checkbox. The highlight
+ * overflows [ElectronInteraction.HighlightOutset] on both sides, so the
+ * box stays aligned with the rest of the screen.
  */
 @Composable
 internal fun CheckboxPrimitive(
@@ -44,6 +48,7 @@ internal fun CheckboxPrimitive(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
+            .highlightOutset()
             .defaultMinSize(minHeight = ElectronDimens.minTouchTarget)
             .clip(ElectronShapes.control)
             .toggleable(
@@ -54,7 +59,7 @@ internal fun CheckboxPrimitive(
                 role = Role.Checkbox,
                 onValueChange = onCheckedChange
             )
-            .padding(end = ElectronSpacing.sm)
+            .padding(horizontal = ElectronInteraction.HighlightOutset)
             .testTag(testTag)
     ) {
         Checkbox(

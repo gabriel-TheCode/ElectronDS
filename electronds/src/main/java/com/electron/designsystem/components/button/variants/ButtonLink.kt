@@ -6,10 +6,15 @@ import androidx.compose.ui.graphics.Color
 import com.electron.designsystem.components.button.models.ButtonUiModel
 import com.electron.designsystem.components.button.primitives.ButtonPrimitive
 import com.electron.designsystem.foundation.ElectronTheme
+import com.electron.designsystem.utils.ElectronInteraction
+import com.electron.designsystem.utils.highlightOutset
 
 /**
  * Inline link: underlined (the signifier that separates it from a
- * Tertiary action), no container and no horizontal padding.
+ * Tertiary action), no container. Its text aligns with the copy around
+ * it, while the pressed/focused highlight overflows
+ * [ElectronInteraction.HighlightOutset] on both sides instead of hugging
+ * the text.
  */
 @Composable
 internal fun ButtonLink(
@@ -36,6 +41,6 @@ internal fun ButtonLink(
         isLoading = false,
         testTag = uiModel.testTag,
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier.highlightOutset()
     )
 }
