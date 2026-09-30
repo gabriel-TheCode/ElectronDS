@@ -11,7 +11,7 @@ import com.electron.designsystem.foundation.ElectronTheme
  *
  * Purpose: page frame with top bar, bottom bar, FAB and content slots,
  * painted on the Electron canvas color. The bottom bar slot takes an
- * ElectronNavigationBar in its `Bottom` variant; on tablets and TV, place
+ * ElectronNavigationBar in its `Bottom` variant; on tablets, place
  * the `Rail` variant beside the content instead.
  *
  * Refactor note: the legacy scaffold accepted `isNetworkConnected`

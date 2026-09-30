@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import com.android.resources.Density
-import com.android.resources.ScreenOrientation
 import com.electron.designsystem.foundation.ElectronTheme
 import com.electron.designsystem.tokens.ElectronSpacing
 
@@ -30,25 +28,12 @@ internal enum class ThemeVariant(val isDark: Boolean) {
 }
 
 /**
- * Form factors the system must hold on. Tablet and TV check the adaptive
+ * Mobile form factors the system must hold on. Tablet checks the adaptive
  * decisions (navigation rail, readable widths, capped sheets and dialogs).
  */
 internal enum class DeviceVariant(val config: DeviceConfig, val isCompact: Boolean) {
     Phone(DeviceConfig.PIXEL_5, isCompact = true),
-    Tablet(DeviceConfig.PIXEL_C, isCompact = false),
-
-    /** 1080p Android TV: 960 x 540dp at xhdpi, landscape. */
-    Tv(
-        DeviceConfig.PIXEL_C.copy(
-            screenWidth = 1920,
-            screenHeight = 1080,
-            xdpi = 320,
-            ydpi = 320,
-            density = Density.XHIGH,
-            orientation = ScreenOrientation.LANDSCAPE
-        ),
-        isCompact = false
-    )
+    Tablet(DeviceConfig.PIXEL_C, isCompact = false)
 }
 
 /**

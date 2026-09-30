@@ -23,7 +23,7 @@ import com.electron.designsystem.tokens.ElectronSpacing
 /**
  * Centered column: visual slot, title, message, then an actions slot.
  * Capped at a readable width so the message keeps a comfortable line
- * length on tablets and TV instead of stretching edge to edge.
+ * length on tablets instead of stretching edge to edge.
  */
 @Composable
 internal fun EmptyStatePrimitive(

@@ -39,7 +39,6 @@ import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronMotion
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
-import com.electron.designsystem.utils.focusRing
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -192,7 +191,6 @@ private fun TabCell(
         modifier = Modifier
             .height(ElectronDimens.tabHeight)
             .clip(ElectronShapes.control)
-            .focusRing(interactionSource, ElectronShapes.control)
             .selectable(
                 selected = isSelected,
                 interactionSource = interactionSource,

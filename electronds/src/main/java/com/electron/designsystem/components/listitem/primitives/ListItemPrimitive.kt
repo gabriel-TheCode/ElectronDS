@@ -27,7 +27,7 @@ import com.electron.designsystem.tokens.ElectronSpacing
  * Row layout for list items: leading slot, title/subtitle column, trailing
  * slot. Clickable only when [onClick] is provided; when [toggleValue] is
  * set the whole row is one toggleable node (a switch row is a single focus
- * stop for TalkBack and the TV D-pad, announced with its on/off state).
+ * stop for TalkBack, announced with its on/off state).
  *
  * The leading slot is at least one medium avatar wide, so titles line up
  * down a list whether a row starts with a 40dp avatar or a 20dp icon.

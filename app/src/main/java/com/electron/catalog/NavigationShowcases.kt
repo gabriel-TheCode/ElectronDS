@@ -95,7 +95,7 @@ internal fun NavigationShowcase() {
             uiModel = NavigationBarUiModel.Bottom(items, selected),
             onItemSelected = { selected = it }
         )
-        // Tablet / TV layout: the same destinations as a rail.
+        // Tablet layout: the same destinations as a rail.
         Row(modifier = Modifier.height(ElectronDimens.readableWidth)) {
             ElectronNavigationBar(
                 uiModel = NavigationBarUiModel.Rail(items, selected),

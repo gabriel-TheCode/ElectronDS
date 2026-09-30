@@ -74,7 +74,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 /**
- * Full screens on phone, tablet and TV, in both themes. These snapshots
+ * Full screens on phone and tablet, in both themes. These snapshots
  * guard the adaptive decisions: bottom bar vs rail, readable widths,
  * capped dialogs and sheets. They do not repeat component states (the
  * gallery test covers those).
@@ -185,7 +185,7 @@ internal class AdaptiveLayoutScreenshotTest(
         }
     }
 
-    /** Bottom bar on compact screens, rail beside the content on tablet and TV. */
+    /** Bottom bar on compact screens, rail beside the content on tablet. */
     @Composable
     private fun AdaptiveFrame(content: @Composable () -> Unit) {
         val topBar = @Composable {

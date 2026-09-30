@@ -23,7 +23,6 @@ import androidx.compose.ui.text.TextStyle
 import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
-import com.electron.designsystem.utils.focusRing
 
 /** Radio row: the whole row is selectable, label included. */
 @Composable
@@ -44,7 +43,6 @@ internal fun RadioButtonPrimitive(
         modifier = modifier
             .defaultMinSize(minHeight = ElectronDimens.minTouchTarget)
             .clip(ElectronShapes.control)
-            .focusRing(interactionSource, ElectronShapes.control)
             .selectable(
                 selected = isSelected,
                 interactionSource = interactionSource,

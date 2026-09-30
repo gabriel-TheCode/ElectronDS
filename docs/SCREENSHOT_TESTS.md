@@ -11,7 +11,7 @@ dark theme fails the build with a visual diff.
 | Test | Renders | Matrix |
 |---|---|---|
 | `ComponentGalleryScreenshotTest` | Every component family with each state that looks different (default, disabled, error, read-only, loading, selected, success), plus overlay surfaces (dialog, sheet, menu, tooltips) | Light, Dark |
-| `AdaptiveLayoutScreenshotTest` | Full screens: dashboard (bottom bar on phone, rail on tablet/TV), empty state (readable width), dialog and sheet at their platform max widths | Light, Dark x Phone, Tablet, TV |
+| `AdaptiveLayoutScreenshotTest` | Full screens: dashboard (bottom bar on phone, rail on tablet), empty state (readable width), dialog and sheet at their platform max widths | Light, Dark x Phone, Tablet |
 | `AccessibilityScreenshotTest` | What TalkBack announces: one node per field (label + value + error), toggle rows as a single switch, labelled icon-only buttons, one "loading" announcement per skeleton | Light |
 
 Golden images live in `electronds/src/test/snapshots/images/`.

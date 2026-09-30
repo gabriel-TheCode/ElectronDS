@@ -19,7 +19,7 @@ public data class NavigationItem(
 
 /**
  * Top-level navigation. The same items render as a bottom bar on phones
- * and as a rail on tablets and TV; the screen picks the variant from its
+ * and as a rail on tablets; the screen picks the variant from its
  * window size class.
  */
 public sealed class NavigationBarUiModel {

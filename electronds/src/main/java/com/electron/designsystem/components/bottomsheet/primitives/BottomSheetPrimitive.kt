@@ -58,7 +58,7 @@ internal fun BottomSheetSurface(
  * disabled (the surface draws a quieter one) and tonal elevation is off,
  * so the sheet is the raised surface color, not a tinted one. The sheet
  * width is capped by Material (640dp), which keeps it readable on tablets
- * and TV instead of spanning the whole screen.
+ * instead of spanning the whole screen.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

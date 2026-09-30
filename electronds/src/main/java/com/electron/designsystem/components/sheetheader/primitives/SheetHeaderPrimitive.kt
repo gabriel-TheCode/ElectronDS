@@ -1,6 +1,5 @@
 package com.electron.designsystem.components.sheetheader.primitives
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,15 +13,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import com.electron.designsystem.foundation.ElectronTheme
 import com.electron.designsystem.tokens.ElectronDimens
-import com.electron.designsystem.tokens.ElectronShapes
-import com.electron.designsystem.utils.focusRing
 
 /**
  * Sheet header block: close affordance, centered title, optional trailing
@@ -40,7 +36,6 @@ internal fun SheetHeaderPrimitive(
     modifier: Modifier = Modifier
 ) {
     val colors = ElectronTheme.colors
-    val closeInteraction = remember { MutableInteractionSource() }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -51,10 +46,7 @@ internal fun SheetHeaderPrimitive(
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
             IconButton(
                 onClick = onCloseClick,
-                interactionSource = closeInteraction,
-                modifier = Modifier
-                    .size(ElectronDimens.minTouchTarget)
-                    .focusRing(closeInteraction, ElectronShapes.pill)
+                modifier = Modifier.size(ElectronDimens.minTouchTarget)
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Close,

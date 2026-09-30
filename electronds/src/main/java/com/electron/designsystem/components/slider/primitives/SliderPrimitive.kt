@@ -35,7 +35,6 @@ import com.electron.designsystem.tokens.ElectronElevation
 import com.electron.designsystem.tokens.ElectronMotion
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
-import com.electron.designsystem.utils.focusRing
 
 internal data class SliderColors(
     val activeTrack: Color,
@@ -81,11 +80,10 @@ private fun SliderTrack(fraction: Float, steps: Int, colors: SliderColors) {
 /**
  * Thumb: a raised disc with a brand ring, distinct from both halves of
  * the track. It grows while pressed or dragged (the finger covers it, the
- * growth confirms the grab) and shows the shared focus ring for D-pad and
- * keyboard adjustment.
+ * growth confirms the grab).
  */
 @Composable
-private fun SliderThumb(isActive: Boolean, colors: SliderColors, interactionSource: MutableInteractionSource) {
+private fun SliderThumb(isActive: Boolean, colors: SliderColors) {
     val size by animateDpAsState(
         targetValue = if (isActive) ElectronDimens.iconLg else ElectronDimens.sliderThumb,
         animationSpec = tween(ElectronMotion.instant, easing = ElectronMotion.easeStandard),
@@ -95,7 +93,6 @@ private fun SliderThumb(isActive: Boolean, colors: SliderColors, interactionSour
         Box(
             modifier = Modifier
                 .size(size)
-                .focusRing(interactionSource, ElectronShapes.pill)
                 .shadow(ElectronElevation.raised, ElectronShapes.pill)
                 .background(colors.thumb, ElectronShapes.pill)
                 .border(ElectronDimens.borderWidthFocus, colors.thumbRing, ElectronShapes.pill)
@@ -153,7 +150,7 @@ internal fun SliderPrimitive(
             interactionSource = interactionSource,
             steps = steps,
             valueRange = valueRange,
-            thumb = { SliderThumb(isActive = isDragged || isPressed, colors = colors, interactionSource = interactionSource) },
+            thumb = { SliderThumb(isActive = isDragged || isPressed, colors = colors) },
             track = { SliderTrack(fraction = fraction, steps = steps, colors = colors) },
             modifier = Modifier
                 .fillMaxWidth()

@@ -36,7 +36,6 @@ import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronMotion
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
-import com.electron.designsystem.utils.focusRing
 import com.electron.designsystem.utils.pressScale
 
 internal data class SegmentColors(
@@ -116,7 +115,6 @@ internal fun SegmentedControlPrimitive(
                         .fillMaxHeight()
                         .pressScale(interactionSource, enabled = isEnabled)
                         .clip(ElectronShapes.segment)
-                        .focusRing(interactionSource, ElectronShapes.segment)
                         .selectable(
                             selected = isSelected,
                             enabled = isEnabled,
