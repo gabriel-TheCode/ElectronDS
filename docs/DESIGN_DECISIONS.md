@@ -95,10 +95,12 @@ negative tracking. The role rules live in the `ElectronTypography` KDoc.
 The typeface is a design token owned by the system, like color: Material 3
 treats typography as part of the theme, and a brand system ships its face
 (IBM Carbon ships Plex, Shopify Polaris ships Inter). ElectronDS bundles
-**Manrope** (400, 500, 600, 700, SIL Open Font License) for display and
-body roles, wired through `ElectronFontFamilies`; apps inherit it through
-`ElectronTheme` without any code. The `data` roles stay monospace, because
-Manrope's figures are proportional and dashboards need aligned digits.
+**Geist** (400, 500, 600, 700) for display and body roles and **Geist Mono**
+(400, 500) for the `data` roles, both under the SIL Open Font License, wired
+through `ElectronFontFamilies`; apps inherit them through `ElectronTheme`
+without any code. Geist is precise and compact, which suits dense mobile
+screens, and its monospaced cut keeps digits aligned in dashboards while
+staying in the same family as the text.
 
 ### Shape
 

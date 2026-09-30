@@ -80,7 +80,7 @@ Composites are built only from other public Electron components, following the s
 ElectronDS uses a "Charged Instrument Panel" identity—cool graphite surfaces with electric primary accents.
 
 - **Color**: Semantic roles (e.g., `content.primary`, `status.success`) instead of raw hex codes.
-- **Typography**: Manrope, bundled with the system and inherited by every app through `ElectronTheme`, plus a monospace `data` family for aligned numeric displays.
+- **Typography**: Geist, bundled with the system and inherited by every app through `ElectronTheme`, with Geist Mono as the `data` family for aligned numeric displays.
 - **Shape**: Crisp 8dp/12dp silhouettes defined in `ElectronShapes`.
 - **Spacing**: A strict 4dp grid (2dp to 64dp).
 

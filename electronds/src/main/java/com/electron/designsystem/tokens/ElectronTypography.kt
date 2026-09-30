@@ -15,23 +15,30 @@ import com.electron.designsystem.R
  * apps inherit it by wrapping their UI in ElectronTheme, and every
  * component picks it up without any app code.
  *
- * - Display and body: Manrope (geometric, technical, very legible at small
- *   sizes), bundled in four static weights (400, 500, 600, 700) under the
- *   SIL Open Font License (see FONT_LICENSE_Manrope.txt).
- * - Data: monospace, so digits keep a fixed width and align in dense
- *   numeric layouts (Manrope's figures are proportional).
+ * - Display and body: Geist (precise, technical, compact), bundled in four
+ *   static weights (400, 500, 600, 700).
+ * - Data: Geist Mono (400, 500), the monospaced cut of the same design, so
+ *   digits keep a fixed width and align in dense numeric layouts while
+ *   staying in the same family as the text around them.
+ *
+ * Both are under the SIL Open Font License (see FONT_LICENSE_Geist.txt).
  */
 public object ElectronFontFamilies {
-    private val manrope: FontFamily = FontFamily(
-        Font(R.font.manrope_regular, FontWeight.Normal),
-        Font(R.font.manrope_medium, FontWeight.Medium),
-        Font(R.font.manrope_semibold, FontWeight.SemiBold),
-        Font(R.font.manrope_bold, FontWeight.Bold)
+    private val geist: FontFamily = FontFamily(
+        Font(R.font.geist_regular, FontWeight.Normal),
+        Font(R.font.geist_medium, FontWeight.Medium),
+        Font(R.font.geist_semibold, FontWeight.SemiBold),
+        Font(R.font.geist_bold, FontWeight.Bold)
     )
 
-    public val display: FontFamily = manrope
-    public val body: FontFamily = manrope
-    public val data: FontFamily = FontFamily.Monospace
+    private val geistMono: FontFamily = FontFamily(
+        Font(R.font.geist_mono_regular, FontWeight.Normal),
+        Font(R.font.geist_mono_medium, FontWeight.Medium)
+    )
+
+    public val display: FontFamily = geist
+    public val body: FontFamily = geist
+    public val data: FontFamily = geistMono
 }
 
 /**
