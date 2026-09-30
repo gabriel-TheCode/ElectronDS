@@ -66,3 +66,14 @@ Recording without a local Android SDK:
   `AccessibilityScreenshotTest`.
 - Keep content deterministic: no current dates, no random data. Infinite
   animations (skeleton shimmer) are captured at their first frame.
+
+## README preview
+
+The light and dark images in the README (`docs/screenshots/`) are copies of
+four app golden images (home screen and demo dashboard, phone). When CI
+records snapshots it refreshes them in the same commit; when it verifies,
+it fails if they no longer match the goldens. After recording locally, run:
+
+```bash
+scripts/update-readme-screenshots.sh
+```
