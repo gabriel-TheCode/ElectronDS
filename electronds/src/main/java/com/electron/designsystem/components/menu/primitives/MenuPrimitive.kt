@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
@@ -115,7 +116,15 @@ internal fun MenuPanel(
     )
 }
 
-/** 48dp entry: leading icon, label, trailing text or selection check. */
+/**
+ * 48dp entry: leading icon, label, trailing text or selection check.
+ *
+ * The pressed/focused highlight is inset from the panel edges and rounded,
+ * concentric with the panel ([ElectronShapes.control] inside
+ * [ElectronShapes.popover] with an [ElectronSpacing.xs] inset), instead of
+ * a square band glued to the panel's sides. The content keeps its 16dp
+ * start and end margins.
+ */
 @Composable
 internal fun MenuItemPrimitive(
     label: String,
@@ -136,8 +145,10 @@ internal fun MenuItemPrimitive(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = ElectronDimens.menuItemHeight)
+            .padding(horizontal = ElectronSpacing.xs)
+            .clip(ElectronShapes.control)
             .clickable(enabled = isEnabled, role = Role.Button, onClick = onClick)
-            .padding(horizontal = ElectronSpacing.lg)
+            .padding(horizontal = ElectronSpacing.md)
             .testTag(testTag)
     ) {
         if (leadingIcon != null) {
