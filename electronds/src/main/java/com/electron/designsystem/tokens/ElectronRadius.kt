@@ -7,9 +7,14 @@ import androidx.compose.ui.unit.dp
 /**
  * ElectronDS corner radius tokens.
  *
- * The Electron silhouette is crisp: small radii on dense controls,
- * a single large radius reserved for floating surfaces, and full
- * rounding only on pills (chips, FAB).
+ * The Electron silhouette is crisp, and radius grows with the size and
+ * elevation of an element:
+ * - xs (4): small labels (tags).
+ * - sm (8): interactive controls (buttons, fields, segmented tracks).
+ * - md (12): containers (cards).
+ * - lg (20): floating surfaces (sheets, dialogs).
+ * - full: only where roundness carries meaning: chips (removable tokens),
+ *   the FAB (floating), badges, avatars and switches.
  */
 public object ElectronRadius {
     public val none: Dp = 0.dp
@@ -25,9 +30,17 @@ public object ElectronRadius {
  * Primitives consume these instead of constructing shapes ad hoc.
  */
 public object ElectronShapes {
+    public val tag: RoundedCornerShape = RoundedCornerShape(ElectronRadius.xs)
     public val control: RoundedCornerShape = RoundedCornerShape(ElectronRadius.sm)
-    public val segment: RoundedCornerShape = RoundedCornerShape(ElectronRadius.xs)
     public val field: RoundedCornerShape = RoundedCornerShape(ElectronRadius.sm)
+
+    /**
+     * Shape of an element nested inside a [control] with [ElectronSpacing.xxs]
+     * padding (the selected segment of a segmented control). Concentric:
+     * inner radius = outer radius - inset, so both curves stay parallel.
+     */
+    public val segment: RoundedCornerShape = RoundedCornerShape(ElectronRadius.sm - ElectronSpacing.xxs)
+
     public val card: RoundedCornerShape = RoundedCornerShape(ElectronRadius.md)
     public val sheet: RoundedCornerShape =
         RoundedCornerShape(topStart = ElectronRadius.lg, topEnd = ElectronRadius.lg)

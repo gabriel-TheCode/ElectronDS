@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,9 +17,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronSpacing
 
-/** Centered column: visual slot, title, message, then an actions slot. */
+/**
+ * Centered column: visual slot, title, message, then an actions slot.
+ * Capped at a readable width so the message keeps a comfortable line
+ * length on tablets and TV instead of stretching edge to edge.
+ */
 @Composable
 internal fun EmptyStatePrimitive(
     title: String,
@@ -36,6 +43,8 @@ internal fun EmptyStatePrimitive(
         verticalArrangement = Arrangement.spacedBy(ElectronSpacing.sm),
         modifier = modifier
             .fillMaxWidth()
+            .wrapContentWidth(Alignment.CenterHorizontally)
+            .widthIn(max = ElectronDimens.readableWidth)
             .padding(horizontal = ElectronSpacing.xl, vertical = ElectronSpacing.xxl)
             .testTag(testTag)
     ) {

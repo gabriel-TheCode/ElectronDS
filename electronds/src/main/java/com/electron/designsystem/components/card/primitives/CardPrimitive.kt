@@ -1,6 +1,6 @@
 package com.electron.designsystem.components.card.primitives
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +16,8 @@ import com.electron.designsystem.tokens.ElectronShapes
 
 /**
  * Card surface block: shape, border and elevation only.
- * Electron cards prefer a hairline border over a shadow.
+ * Electron cards separate from the canvas with tone plus a hairline border,
+ * never a shadow: shadows go muddy in dark mode and stack badly in lists.
  */
 @Composable
 internal fun CardPrimitive(
@@ -30,13 +31,9 @@ internal fun CardPrimitive(
         shape = ElectronShapes.card,
         colors = CardDefaults.cardColors(containerColor = containerColor),
         elevation = CardDefaults.cardElevation(defaultElevation = ElectronElevation.flat),
+        border = BorderStroke(ElectronDimens.borderWidth, borderColor),
         modifier = modifier
             .fillMaxWidth()
-            .border(
-                width = ElectronDimens.borderWidth,
-                color = borderColor,
-                shape = ElectronShapes.card
-            )
             .testTag(testTag)
     ) {
         Column(content = content)

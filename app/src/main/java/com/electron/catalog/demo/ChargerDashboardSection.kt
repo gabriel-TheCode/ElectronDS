@@ -2,7 +2,10 @@ package com.electron.catalog.demo
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BatteryChargingFull
 import androidx.compose.material.icons.outlined.Bolt
@@ -145,9 +148,13 @@ internal fun ChargerDashboardSection() {
             uiModel = state.toRangeUiModel(),
             onOptionSelected = { state = state.copy(range = ConsumptionRange.entries[it]) }
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.md)) {
-            ElectronMetricCard(state.toConsumptionUiModel(), modifier = Modifier.weight(1f))
-            ElectronMetricCard(state.toBatteryUiModel(), modifier = Modifier.weight(1f))
+        // Cards side by side share the tallest card's height.
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.md),
+            modifier = Modifier.height(IntrinsicSize.Min)
+        ) {
+            ElectronMetricCard(state.toConsumptionUiModel(), modifier = Modifier.weight(1f).fillMaxHeight())
+            ElectronMetricCard(state.toBatteryUiModel(), modifier = Modifier.weight(1f).fillMaxHeight())
         }
         ElectronCard(CardUiModel.Default()) {
             ElectronListItem(state.toStatusItemUiModel())

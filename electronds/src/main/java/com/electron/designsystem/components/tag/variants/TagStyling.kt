@@ -34,20 +34,21 @@ internal fun TagSize.metrics(): TagMetrics = when (this) {
 internal fun resolveTagColors(style: TagStyle, tone: TagTone): TagColorsResolved {
     val c = ElectronTheme.colors
 
-    data class TonePair(val strong: Color, val subtle: Color, val onStrong: Color)
+    // strong: text and outline on a background; fill + onFill: the Filled style.
+    data class ToneSet(val strong: Color, val subtle: Color, val fill: Color, val onFill: Color)
 
     val pair = when (tone) {
-        TagTone.Brand -> TonePair(c.brand.primary, c.brand.primarySubtle, c.brand.onPrimary)
-        TagTone.Accent -> TonePair(c.brand.accent, c.brand.accentSubtle, c.brand.onAccent)
-        TagTone.Neutral -> TonePair(c.content.secondary, c.background.surfaceSunken, c.content.inverse)
-        TagTone.Success -> TonePair(c.status.success, c.status.successSubtle, c.status.onSuccess)
-        TagTone.Warning -> TonePair(c.status.warning, c.status.warningSubtle, c.status.onWarning)
-        TagTone.Error -> TonePair(c.status.error, c.status.errorSubtle, c.status.onError)
-        TagTone.Info -> TonePair(c.status.info, c.status.infoSubtle, c.status.onInfo)
+        TagTone.Brand -> ToneSet(c.brand.primary, c.brand.primarySubtle, c.brand.primaryFill, c.brand.onPrimary)
+        TagTone.Accent -> ToneSet(c.brand.accent, c.brand.accentSubtle, c.brand.accentFill, c.brand.onAccent)
+        TagTone.Neutral -> ToneSet(c.content.secondary, c.background.surfaceSunken, c.content.secondary, c.content.inverse)
+        TagTone.Success -> ToneSet(c.status.success, c.status.successSubtle, c.status.successFill, c.status.onSuccess)
+        TagTone.Warning -> ToneSet(c.status.warning, c.status.warningSubtle, c.status.warningFill, c.status.onWarning)
+        TagTone.Error -> ToneSet(c.status.error, c.status.errorSubtle, c.status.errorFill, c.status.onError)
+        TagTone.Info -> ToneSet(c.status.info, c.status.infoSubtle, c.status.infoFill, c.status.onInfo)
     }
 
     return when (style) {
-        TagStyle.Filled -> TagColorsResolved(pair.strong, pair.onStrong, pair.strong)
+        TagStyle.Filled -> TagColorsResolved(pair.fill, pair.onFill, pair.fill)
         TagStyle.Tinted -> TagColorsResolved(pair.subtle, pair.strong, pair.subtle)
         TagStyle.Outlined -> TagColorsResolved(Color.Transparent, pair.strong, pair.strong)
     }

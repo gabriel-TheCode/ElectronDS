@@ -11,7 +11,7 @@ import com.electron.designsystem.foundation.ElectronTheme
 @Composable
 internal fun electronCheckboxColors(isError: Boolean): CheckboxColors {
     val c = ElectronTheme.colors
-    val accent = if (isError) c.status.error else c.brand.primary
+    val accent = if (isError) c.status.errorFill else c.brand.primaryFill
     return CheckboxDefaults.colors(
         checkedColor = accent,
         uncheckedColor = if (isError) c.status.error else c.border.strong,
@@ -33,7 +33,7 @@ internal fun CheckboxDefault(
         isEnabled = uiModel.isEnabled,
         colors = electronCheckboxColors(uiModel.isError),
         label = uiModel.label,
-        labelStyle = ElectronTheme.typography.bodyMedium,
+        labelStyle = ElectronTheme.typography.bodyLarge,
         labelColor = if (uiModel.isEnabled) c.content.primary else c.content.disabled,
         testTag = uiModel.testTag,
         onCheckedChange = onCheckedChange,

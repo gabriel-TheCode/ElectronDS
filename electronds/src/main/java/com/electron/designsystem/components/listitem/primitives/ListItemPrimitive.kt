@@ -2,12 +2,15 @@ package com.electron.designsystem.components.listitem.primitives
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +25,12 @@ import com.electron.designsystem.tokens.ElectronSpacing
 
 /**
  * Row layout for list items: leading slot, title/subtitle column, trailing
- * slot. Clickable only when [onClick] is provided.
+ * slot. Clickable only when [onClick] is provided; when [toggleValue] is
+ * set the whole row is one toggleable node (a switch row is a single focus
+ * stop for TalkBack and the TV D-pad, announced with its on/off state).
+ *
+ * The leading slot is at least one medium avatar wide, so titles line up
+ * down a list whether a row starts with a 40dp avatar or a 20dp icon.
  */
 @Composable
 internal fun ListItemPrimitive(
@@ -36,14 +44,20 @@ internal fun ListItemPrimitive(
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
     role: Role? = null,
+    toggleValue: Boolean? = null,
     onClick: (() -> Unit)? = null,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable RowScope.() -> Unit)? = null
 ) {
-    val clickModifier = if (onClick != null) {
-        Modifier.clickable(enabled = isEnabled, role = role, onClick = onClick)
-    } else {
-        Modifier
+    val clickModifier = when {
+        onClick != null && toggleValue != null -> Modifier.toggleable(
+            value = toggleValue,
+            enabled = isEnabled,
+            role = role,
+            onValueChange = { onClick() }
+        )
+        onClick != null -> Modifier.clickable(enabled = isEnabled, role = role, onClick = onClick)
+        else -> Modifier
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -55,7 +69,14 @@ internal fun ListItemPrimitive(
             .padding(horizontal = ElectronSpacing.lg, vertical = ElectronSpacing.sm)
             .testTag(testTag)
     ) {
-        leading?.invoke()
+        if (leading != null) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.widthIn(min = ElectronDimens.avatarMd)
+            ) {
+                leading()
+            }
+        }
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,

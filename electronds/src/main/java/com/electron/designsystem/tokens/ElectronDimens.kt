@@ -5,14 +5,18 @@ import androidx.compose.ui.unit.dp
 
 /**
  * ElectronDS component dimension tokens.
+ *
+ * Every value sits on the 4dp grid. Controls that appear side by side in a
+ * form share one height: a Large button and an input field are both 48dp,
+ * so a field and its submit button line up without per-screen fixes.
  */
 public object ElectronDimens {
     // Control heights
     public val controlHeightSm: Dp = 32.dp
     public val controlHeightMd: Dp = 40.dp
     public val controlHeightLg: Dp = 48.dp
-    public val fieldHeight: Dp = 56.dp
-    public val chipHeight: Dp = 34.dp
+    public val fieldHeight: Dp = 48.dp
+    public val chipHeight: Dp = 32.dp
     public val sheetHeaderHeight: Dp = 56.dp
     public val topBarHeight: Dp = 56.dp
     public val listItemMinHeight: Dp = 56.dp
@@ -32,7 +36,7 @@ public object ElectronDimens {
 
     // Badge sizes
     public val badgeDot: Dp = 8.dp
-    public val badgeHeight: Dp = 18.dp
+    public val badgeHeight: Dp = 16.dp
 
     // Progress indicators
     public val progressTrackHeight: Dp = 4.dp
@@ -40,6 +44,10 @@ public object ElectronDimens {
     public val progressCircularSm: Dp = 24.dp
     public val progressCircularMd: Dp = 40.dp
     public val progressCircularLg: Dp = 64.dp
+
+    // Layout
+    /** Maximum width of centered reading content (empty states, messages) on tablets and TV. */
+    public val readableWidth: Dp = 400.dp
 
     // Misc
     public val borderWidth: Dp = 1.dp

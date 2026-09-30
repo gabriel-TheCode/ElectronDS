@@ -30,6 +30,18 @@ public object ElectronFontFamilies {
  * Role-based, Material 3 aligned. The signature Electron addition is the
  * data family: monospaced styles for amounts, counters and identifiers,
  * so numbers align vertically in dense financial or telemetry layouts.
+ *
+ * Role rules (so two components never pick different styles for the same job):
+ * - Screen and dialog titles: headline. Section and card titles: title.
+ * - User content and row text (list titles, field values, control labels): bodyLarge.
+ * - Supporting text (subtitles, messages, helper text): bodyMedium / bodySmall.
+ * - Actions (buttons, chips, segments, field labels): labelLarge, SemiBold so an
+ *   action always outweighs the content around it.
+ * - Metadata (tags, badges, captions): labelMedium / labelSmall.
+ * - Numbers that matter: data. `dataDisplay` is the hero figure of a screen.
+ *
+ * Large sizes carry slightly negative tracking: display type set at default
+ * tracking looks loose and unconsidered.
  */
 public object ElectronTypography {
 
@@ -54,13 +66,15 @@ public object ElectronTypography {
         fontFamily = ElectronFontFamilies.display,
         fontWeight = FontWeight.SemiBold,
         fontSize = 26.sp,
-        lineHeight = 34.sp
+        lineHeight = 32.sp,
+        letterSpacing = (-0.25).sp
     )
     public val headlineSmall: TextStyle = TextStyle(
         fontFamily = ElectronFontFamilies.display,
         fontWeight = FontWeight.SemiBold,
         fontSize = 22.sp,
-        lineHeight = 28.sp
+        lineHeight = 28.sp,
+        letterSpacing = (-0.15).sp
     )
 
     // Titles
@@ -68,7 +82,8 @@ public object ElectronTypography {
         fontFamily = ElectronFontFamilies.body,
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
-        lineHeight = 24.sp
+        lineHeight = 24.sp,
+        letterSpacing = (-0.1).sp
     )
     public val titleMedium: TextStyle = TextStyle(
         fontFamily = ElectronFontFamilies.body,
@@ -106,7 +121,7 @@ public object ElectronTypography {
     // Labels
     public val labelLarge: TextStyle = TextStyle(
         fontFamily = ElectronFontFamilies.body,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
@@ -122,11 +137,18 @@ public object ElectronTypography {
         fontFamily = ElectronFontFamilies.body,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
-        lineHeight = 14.sp,
+        lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     )
 
     // Data: the Electron signature styles for numeric content
+    public val dataDisplay: TextStyle = TextStyle(
+        fontFamily = ElectronFontFamilies.data,
+        fontWeight = FontWeight.Medium,
+        fontSize = 32.sp,
+        lineHeight = 38.sp,
+        letterSpacing = (-0.5).sp
+    )
     public val dataLarge: TextStyle = TextStyle(
         fontFamily = ElectronFontFamilies.data,
         fontWeight = FontWeight.Medium,

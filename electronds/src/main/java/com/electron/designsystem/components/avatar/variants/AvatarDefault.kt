@@ -15,10 +15,14 @@ import com.electron.designsystem.tokens.ElectronTypography
 
 internal data class AvatarMetrics(val container: Dp, val icon: Dp, val textStyle: TextStyle)
 
+/**
+ * Glyphs fill half of the circle at every size, and initials scale with
+ * it, so a 24dp and a 64dp avatar look like the same object zoomed.
+ */
 internal fun AvatarSize.metrics(): AvatarMetrics = when (this) {
-    AvatarSize.Sm -> AvatarMetrics(ElectronDimens.avatarSm, ElectronDimens.iconSm, ElectronTypography.labelSmall)
-    AvatarSize.Md -> AvatarMetrics(ElectronDimens.avatarMd, ElectronDimens.iconLg, ElectronTypography.labelLarge)
-    AvatarSize.Lg -> AvatarMetrics(ElectronDimens.avatarLg, ElectronDimens.iconXl, ElectronTypography.titleLarge)
+    AvatarSize.Sm -> AvatarMetrics(ElectronDimens.avatarSm, ElectronDimens.iconXs, ElectronTypography.labelSmall)
+    AvatarSize.Md -> AvatarMetrics(ElectronDimens.avatarMd, ElectronDimens.iconMd, ElectronTypography.titleSmall)
+    AvatarSize.Lg -> AvatarMetrics(ElectronDimens.avatarLg, ElectronDimens.iconXl, ElectronTypography.headlineSmall)
 }
 
 internal data class AvatarColorsResolved(val background: Color, val content: Color)

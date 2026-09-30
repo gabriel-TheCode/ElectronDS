@@ -30,22 +30,28 @@ internal fun primaryButtonColors(state: ButtonState, isEnabled: Boolean): Button
         return ButtonColorsResolved(c.interaction.disabledBackground, c.interaction.disabledContent, null)
     }
     return when (state) {
-        ButtonState.Default -> ButtonColorsResolved(c.brand.primary, c.brand.onPrimary, null)
-        ButtonState.Success -> ButtonColorsResolved(c.status.success, c.status.onSuccess, null)
-        ButtonState.Error -> ButtonColorsResolved(c.status.error, c.status.onError, null)
+        ButtonState.Default -> ButtonColorsResolved(c.brand.primaryFill, c.brand.onPrimary, null)
+        ButtonState.Success -> ButtonColorsResolved(c.status.successFill, c.status.onSuccess, null)
+        ButtonState.Error -> ButtonColorsResolved(c.status.errorFill, c.status.onError, null)
     }
 }
 
+/**
+ * Secondary is tonal, not outlined: a tinted container reads as a real
+ * button on both canvas and surface without adding a border, and keeps
+ * the whole button family border-free. Disabled matches Primary so every
+ * disabled button looks the same regardless of its emphasis.
+ */
 @Composable
 internal fun secondaryButtonColors(state: ButtonState, isEnabled: Boolean): ButtonColorsResolved {
     val c = ElectronTheme.colors
     if (!isEnabled) {
-        return ButtonColorsResolved(Color.Transparent, c.interaction.disabledContent, c.border.subtle)
+        return ButtonColorsResolved(c.interaction.disabledBackground, c.interaction.disabledContent, null)
     }
     return when (state) {
-        ButtonState.Default -> ButtonColorsResolved(Color.Transparent, c.brand.primary, c.border.default)
-        ButtonState.Success -> ButtonColorsResolved(c.status.successSubtle, c.status.success, c.status.success)
-        ButtonState.Error -> ButtonColorsResolved(c.status.errorSubtle, c.status.error, c.status.error)
+        ButtonState.Default -> ButtonColorsResolved(c.brand.primarySubtle, c.brand.primaryStrong, null)
+        ButtonState.Success -> ButtonColorsResolved(c.status.successSubtle, c.status.success, null)
+        ButtonState.Error -> ButtonColorsResolved(c.status.errorSubtle, c.status.error, null)
     }
 }
 
@@ -67,6 +73,9 @@ internal fun ButtonSize.height(): Dp = when (this) {
     ButtonSize.Medium -> ElectronDimens.controlHeightMd
     ButtonSize.Large -> ElectronDimens.controlHeightLg
 }
+
+/** Links sit inline with text: no horizontal padding, so their text aligns with the copy around them. */
+internal val LinkContentPadding: PaddingValues = PaddingValues(horizontal = ElectronSpacing.none)
 
 internal fun ButtonSize.contentPadding(): PaddingValues = when (this) {
     ButtonSize.Small -> PaddingValues(horizontal = ElectronSpacing.md)

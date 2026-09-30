@@ -31,7 +31,7 @@ internal fun RadioButtonDefault(
         isEnabled = uiModel.isEnabled,
         colors = electronRadioButtonColors(),
         label = uiModel.label,
-        labelStyle = ElectronTheme.typography.bodyMedium,
+        labelStyle = ElectronTheme.typography.bodyLarge,
         labelColor = if (uiModel.isEnabled) c.content.primary else c.content.disabled,
         testTag = uiModel.testTag,
         onClick = onClick,

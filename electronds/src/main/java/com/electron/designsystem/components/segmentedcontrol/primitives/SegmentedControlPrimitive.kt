@@ -1,20 +1,29 @@
 package com.electron.designsystem.components.segmentedcontrol.primitives
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,17 +36,26 @@ import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronMotion
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
+import com.electron.designsystem.utils.focusRing
+import com.electron.designsystem.utils.pressScale
 
 internal data class SegmentColors(
     val track: Color,
-    val selectedContainer: Color,
+    val indicator: Color,
     val selectedContent: Color,
     val content: Color
 )
 
 /**
- * Sunken track holding equal-width segments; the selected segment is a
- * raised surface. Color changes are animated with the quick motion token.
+ * Sunken track with one tinted indicator that slides to the selected
+ * segment. A single moving indicator explains the change ("the value moved
+ * here") better than two segments swapping backgrounds; a position change
+ * is physical, so it moves on a spring. The indicator radius is concentric
+ * with the track.
+ *
+ * The animated value is the selected index, not a position: a new selection
+ * slides, while a size change (rotation, split screen) re-places the
+ * indicator instantly from the current width instead of sliding it.
  */
 @Composable
 internal fun SegmentedControlPrimitive(
@@ -50,50 +68,74 @@ internal fun SegmentedControlPrimitive(
     onOptionSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.xxs),
+    if (options.isEmpty()) return
+    val safeIndex = selectedIndex.coerceIn(0, options.lastIndex)
+
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .height(ElectronDimens.controlHeightMd)
             .background(colors.track, ElectronShapes.control)
             .padding(ElectronSpacing.xxs)
-            .selectableGroup()
             .testTag(testTag)
     ) {
-        options.forEachIndexed { index, option ->
-            val isSelected = index == selectedIndex
-            val container by animateColorAsState(
-                targetValue = if (isSelected) colors.selectedContainer else Color.Transparent,
-                animationSpec = tween(ElectronMotion.quick),
-                label = "segmentContainer"
-            )
-            val content by animateColorAsState(
-                targetValue = if (isSelected) colors.selectedContent else colors.content,
-                animationSpec = tween(ElectronMotion.quick),
-                label = "segmentContent"
-            )
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .clip(ElectronShapes.segment)
-                    .background(container)
-                    .selectable(
-                        selected = isSelected,
-                        enabled = isEnabled,
-                        role = Role.Tab,
-                        onClick = { onOptionSelected(index) }
-                    )
-                    .testTag("${testTag}_$index")
-            ) {
-                Text(
-                    text = option,
-                    style = textStyle,
-                    color = content,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+        val gap = ElectronSpacing.xxs
+        val segmentWidth = (maxWidth - gap * (options.size - 1)) / options.size
+        val animatedIndex by animateFloatAsState(
+            targetValue = safeIndex.toFloat(),
+            animationSpec = spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow),
+            label = "segmentIndicator"
+        )
+
+        Box(
+            modifier = Modifier
+                .offset(x = (segmentWidth + gap) * animatedIndex)
+                .width(segmentWidth)
+                .fillMaxHeight()
+                .background(colors.indicator, ElectronShapes.segment)
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(gap),
+            modifier = Modifier
+                .fillMaxSize()
+                .selectableGroup()
+        ) {
+            options.forEachIndexed { index, option ->
+                val isSelected = index == safeIndex
+                val interactionSource = remember { MutableInteractionSource() }
+                val content by animateColorAsState(
+                    targetValue = if (isSelected) colors.selectedContent else colors.content,
+                    animationSpec = tween(ElectronMotion.quick, easing = ElectronMotion.easeStandard),
+                    label = "segmentContent"
                 )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .pressScale(interactionSource, enabled = isEnabled)
+                        .clip(ElectronShapes.segment)
+                        .focusRing(interactionSource, ElectronShapes.segment)
+                        .selectable(
+                            selected = isSelected,
+                            enabled = isEnabled,
+                            role = Role.Tab,
+                            interactionSource = interactionSource,
+                            indication = null,
+                            onClick = { onOptionSelected(index) }
+                        )
+                        .padding(horizontal = ElectronSpacing.sm)
+                        .testTag("${testTag}_$index")
+                ) {
+                    Text(
+                        text = option,
+                        style = textStyle,
+                        color = content,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }

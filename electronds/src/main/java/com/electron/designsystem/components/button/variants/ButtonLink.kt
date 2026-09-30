@@ -7,7 +7,10 @@ import com.electron.designsystem.components.button.models.ButtonUiModel
 import com.electron.designsystem.components.button.primitives.ButtonPrimitive
 import com.electron.designsystem.foundation.ElectronTheme
 
-/** Inline underlined link-style button. */
+/**
+ * Inline link: underlined (the signifier that separates it from a
+ * Tertiary action), no container and no horizontal padding.
+ */
 @Composable
 internal fun ButtonLink(
     uiModel: ButtonUiModel.Link,
@@ -26,7 +29,7 @@ internal fun ButtonLink(
         contentColor = contentColor,
         borderColor = null,
         height = uiModel.size.height(),
-        contentPadding = uiModel.size.contentPadding(),
+        contentPadding = LinkContentPadding,
         isEnabled = uiModel.isEnabled,
         isFullWidth = false,
         isUnderlined = true,

@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -91,7 +93,7 @@ fun CatalogScreen(
                     style = ElectronTheme.typography.labelMedium,
                     color = ElectronTheme.colors.content.secondary
                 )
-                Spacer(modifier = Modifier.padding(ElectronSpacing.xs))
+                Spacer(modifier = Modifier.width(ElectronSpacing.sm))
                 ElectronSwitch(
                     uiModel = SwitchUiModel.Default(isChecked = isDarkTheme),
                     onCheckedChange = onThemeToggled
@@ -136,7 +138,11 @@ fun CatalogScreen(
                     text = "3 devices connected to the grid",
                     style = ElectronTheme.typography.bodyMedium,
                     color = ElectronTheme.colors.content.secondary,
-                    modifier = Modifier.padding(horizontal = ElectronSpacing.lg)
+                    modifier = Modifier.padding(
+                        start = ElectronSpacing.lg,
+                        end = ElectronSpacing.lg,
+                        bottom = ElectronSpacing.lg
+                    )
                 )
             }
             ElectronCard(CardUiModel.Status("Your session expires in 5 minutes.", CardSeverity.Warning))
@@ -167,7 +173,7 @@ fun CatalogScreen(
             SectionTitle("Feature example: charger dashboard")
             ChargerDashboardSection()
 
-            Spacer(modifier = Modifier.padding(bottom = ElectronSpacing.huge))
+            Spacer(modifier = Modifier.height(ElectronSpacing.huge))
         }
     }
 }
@@ -194,11 +200,16 @@ private fun ChipShowcase() {
     }
 }
 
+/**
+ * Sections are separated by a larger gap (xl above the title) than the
+ * gap between items inside a section (lg), so the page reads as groups.
+ */
 @Composable
 private fun SectionTitle(text: String) {
     Text(
         text = text,
         style = ElectronTheme.typography.titleLarge,
-        color = ElectronTheme.colors.content.primary
+        color = ElectronTheme.colors.content.primary,
+        modifier = Modifier.padding(top = ElectronSpacing.xl)
     )
 }

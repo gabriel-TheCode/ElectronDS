@@ -55,24 +55,28 @@ internal fun MetricCardFrame(
     ) {
         MetricPrimitive(
             label = label,
-            labelStyle = typography.labelLarge,
+            labelStyle = typography.labelMedium,
             labelColor = c.content.secondary,
             value = value,
-            valueStyle = typography.dataLarge,
+            valueStyle = typography.dataDisplay,
             valueColor = c.content.primary,
             unit = unit,
-            unitStyle = typography.bodyMedium,
+            unitStyle = typography.titleMedium,
             unitColor = c.content.secondary,
             leading = if (icon != null) {
                 { ElectronIcon(icon.copy(size = IconSize.Sm)) }
             } else {
                 null
             },
-            footer = {
-                footer?.invoke(this)
-                if (caption != null) {
-                    Text(text = caption, style = typography.bodySmall, color = c.content.muted)
+            footer = if (footer != null || caption != null) {
+                {
+                    footer?.invoke(this)
+                    if (caption != null) {
+                        Text(text = caption, style = typography.bodySmall, color = c.content.muted)
+                    }
                 }
+            } else {
+                null
             }
         )
     }

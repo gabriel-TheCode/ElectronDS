@@ -1,6 +1,9 @@
 package com.electron.designsystem.components.button.primitives
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,19 +13,25 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import com.electron.designsystem.components.icon.ElectronIcon
 import com.electron.designsystem.components.icon.models.IconUiModel
 import com.electron.designsystem.foundation.ElectronTheme
 import com.electron.designsystem.tokens.ElectronDimens
+import com.electron.designsystem.tokens.ElectronMotion
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
+import com.electron.designsystem.utils.focusRing
+import com.electron.designsystem.utils.pressScale
 
 /**
  * Single button primitive.
@@ -36,6 +45,14 @@ import com.electron.designsystem.tokens.ElectronSpacing
  * delegated to Material's `enabled` so semantics and ripple behave correctly
  * (the legacy code swallowed onClick instead, which kept the button looking
  * and announcing as enabled to accessibility services).
+ *
+ * Feedback: colors cross-fade when the state changes (Default to Success
+ * after a save reads as a transformation, not a flash), the button scales
+ * down under the finger and shows a focus ring for keyboard and TV.
+ *
+ * The icon always takes the button's content color (the model's tone is
+ * ignored here): an icon and its label are one action and must never be
+ * two colors.
  */
 @Composable
 internal fun ButtonPrimitive(
@@ -54,28 +71,44 @@ internal fun ButtonPrimitive(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isInteractive = isEnabled && !isLoading
     val widthModifier = if (isFullWidth) modifier.fillMaxWidth() else modifier
+
+    val background by animateColorAsState(
+        targetValue = backgroundColor,
+        animationSpec = tween(ElectronMotion.quick, easing = ElectronMotion.easeStandard),
+        label = "buttonBackground"
+    )
+    val content by animateColorAsState(
+        targetValue = contentColor,
+        animationSpec = tween(ElectronMotion.quick, easing = ElectronMotion.easeStandard),
+        label = "buttonContent"
+    )
 
     Button(
         onClick = onClick,
-        enabled = isEnabled && !isLoading,
-        shape = ElectronShapes.pill,
+        enabled = isInteractive,
+        shape = ElectronShapes.control,
         border = borderColor?.let { BorderStroke(ElectronDimens.borderWidth, it) },
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
-            contentColor = contentColor,
-            disabledContainerColor = backgroundColor,
-            disabledContentColor = contentColor
+            containerColor = background,
+            contentColor = content,
+            disabledContainerColor = background,
+            disabledContentColor = content
         ),
         elevation = null,
         contentPadding = contentPadding,
+        interactionSource = interactionSource,
         modifier = widthModifier
             .heightIn(min = height)
+            .pressScale(interactionSource, enabled = isInteractive)
+            .focusRing(interactionSource, ElectronShapes.control)
             .testTag(testTag)
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                color = contentColor,
+                color = content,
                 strokeWidth = ElectronDimens.borderWidthFocus,
                 modifier = Modifier.size(ElectronDimens.iconMd)
             )
@@ -83,7 +116,12 @@ internal fun ButtonPrimitive(
                 Spacer(modifier = Modifier.width(ElectronSpacing.sm))
             }
         } else if (icon != null) {
-            ElectronIcon(uiModel = icon)
+            Icon(
+                imageVector = icon.imageVector,
+                contentDescription = icon.contentDescription,
+                tint = content,
+                modifier = Modifier.size(ElectronDimens.iconMd)
+            )
             if (!text.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.width(ElectronSpacing.sm))
             }
@@ -92,7 +130,9 @@ internal fun ButtonPrimitive(
             Text(
                 text = text,
                 style = ElectronTheme.typography.labelLarge,
-                textDecoration = if (isUnderlined) TextDecoration.Underline else TextDecoration.None
+                textDecoration = if (isUnderlined) TextDecoration.Underline else TextDecoration.None,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

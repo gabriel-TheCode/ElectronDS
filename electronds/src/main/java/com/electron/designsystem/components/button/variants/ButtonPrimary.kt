@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.electron.designsystem.components.button.models.ButtonUiModel
 import com.electron.designsystem.components.button.primitives.ButtonPrimitive
-import com.electron.designsystem.components.icon.models.IconTone
 
 /** Filled brand button: the single most prominent action of a screen. */
 @Composable
@@ -16,7 +15,7 @@ internal fun ButtonPrimary(
     val colors = primaryButtonColors(uiModel.state, uiModel.isEnabled)
     ButtonPrimitive(
         text = uiModel.text,
-        icon = uiModel.icon?.copy(tone = IconTone.OnBrand),
+        icon = uiModel.icon,
         backgroundColor = colors.background,
         contentColor = colors.content,
         borderColor = colors.border,
