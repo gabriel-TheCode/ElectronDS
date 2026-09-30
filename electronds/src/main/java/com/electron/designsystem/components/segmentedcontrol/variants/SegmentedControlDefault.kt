@@ -44,6 +44,7 @@ internal fun SegmentedControlDefault(
         selectedIndex = uiModel.selectedIndex,
         isEnabled = uiModel.isEnabled,
         colors = segmentColors(uiModel.isEnabled),
+        pressedColor = ElectronTheme.colors.interaction.pressed,
         textStyle = ElectronTheme.typography.labelLarge,
         testTag = uiModel.testTag,
         onOptionSelected = onOptionSelected,

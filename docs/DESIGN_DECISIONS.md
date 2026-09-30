@@ -128,9 +128,13 @@ decisive, like a circuit closing, and only explains a change:
 | Appearing message (field error/helper) | fade in with animated height |
 | Progress value | glide over `standard` on a single pill gauge (no gap, no end dot) |
 
-Press feedback is shared by every tappable control through
-`utils/ElectronInteraction.kt`, so a button, a chip, a segment and the FAB
-answer the same way. Focus keeps Material's own soft state layer, clipped
+Press feedback is shared by tappable controls through
+`utils/ElectronInteraction.kt`, so a button, a chip and the FAB answer the
+same way. The segmented control is one gesture instead: the whole 48dp
+height and the gaps are touch area, the pressed segment is tinted, the
+finger can slide between segments (dragging the indicator when it starts
+on the selected one), and the choice is committed on release with a
+haptic tick. Focus keeps Material's own soft state layer, clipped
 to each control's shape: no outline is drawn on top of the components. Full-width rows (list items) keep the ripple only:
 scaling a full-width surface reads as layout jitter.
 

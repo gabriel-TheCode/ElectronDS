@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 
 /**
- * Shared press feedback for every tappable Electron control, so a button,
- * a chip and a segment answer a touch the same way: a 3% scale-down on a
+ * Shared press feedback for tappable Electron controls, so a button, a
+ * chip and the FAB answer a touch the same way: a 3% scale-down on a
  * critically damped spring. It confirms the touch under the finger (the
  * ripple alone is often hidden by it) and settles without overshoot.
  *
