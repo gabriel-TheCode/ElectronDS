@@ -90,10 +90,15 @@ Role-based Material 3 scale with one signature addition: a monospaced
 identifiers, so digits align in dense numeric layouts. `dataDisplay` (32sp)
 is the hero figure of a dashboard. Actions (`labelLarge`) are SemiBold so a
 button always outweighs the text around it; large sizes carry slightly
-negative tracking. The role rules live in the `ElectronTypography` KDoc. Intended faces are
-Space Grotesk (display), Inter (body) and JetBrains Mono (data), wired
-through `ElectronFontFamilies` with platform fallbacks until the font files
-are licensed and committed.
+negative tracking. The role rules live in the `ElectronTypography` KDoc.
+
+The typeface is a design token owned by the system, like color: Material 3
+treats typography as part of the theme, and a brand system ships its face
+(IBM Carbon ships Plex, Shopify Polaris ships Inter). ElectronDS bundles
+**Manrope** (400, 500, 600, 700, SIL Open Font License) for display and
+body roles, wired through `ElectronFontFamilies`; apps inherit it through
+`ElectronTheme` without any code. The `data` roles stay monospace, because
+Manrope's figures are proportional and dashboards need aligned digits.
 
 ### Shape
 
@@ -124,7 +129,7 @@ decisive, like a circuit closing, and only explains a change:
 | State color (button Default to Success, field focus) | cross-fade, `quick`, `easeStandard` |
 | Press | 3% scale-down, critically damped spring |
 | Position (segmented indicator) | spring, no bounce |
-| New value (badge count, metric figure) | vertical roll, `easeEnter` in, `easeExit` out |
+| New value (badge count, metric figure) | vertical roll on one shared timeline (`standard`); the metric figure rolls in the draw layer only, so its baseline and unit never move |
 | Appearing message (field error/helper) | fade in with animated height |
 | Progress value | glide over `standard` on a single pill gauge (no gap, no end dot) |
 

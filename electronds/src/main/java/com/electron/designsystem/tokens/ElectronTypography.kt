@@ -2,25 +2,35 @@ package com.electron.designsystem.tokens
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.electron.designsystem.R
 
 /**
  * ElectronDS font families.
  *
- * Intended brand pairing:
- * - Display: Space Grotesk (geometric, technical character)
- * - Body: Inter (neutral, highly legible)
- * - Data: JetBrains Mono (numeric readouts, code, identifiers)
+ * The typeface is a design token owned by the system, like the colors:
+ * apps inherit it by wrapping their UI in ElectronTheme, and every
+ * component picks it up without any app code.
  *
- * The families resolve to platform fallbacks until the licensed font files
- * are added under res/font. Swapping them in here re-skins the entire
- * system without touching any component.
+ * - Display and body: Manrope (geometric, technical, very legible at small
+ *   sizes), bundled in four static weights (400, 500, 600, 700) under the
+ *   SIL Open Font License (see FONT_LICENSE_Manrope.txt).
+ * - Data: monospace, so digits keep a fixed width and align in dense
+ *   numeric layouts (Manrope's figures are proportional).
  */
 public object ElectronFontFamilies {
-    public val display: FontFamily = FontFamily.SansSerif
-    public val body: FontFamily = FontFamily.SansSerif
+    private val manrope: FontFamily = FontFamily(
+        Font(R.font.manrope_regular, FontWeight.Normal),
+        Font(R.font.manrope_medium, FontWeight.Medium),
+        Font(R.font.manrope_semibold, FontWeight.SemiBold),
+        Font(R.font.manrope_bold, FontWeight.Bold)
+    )
+
+    public val display: FontFamily = manrope
+    public val body: FontFamily = manrope
     public val data: FontFamily = FontFamily.Monospace
 }
 

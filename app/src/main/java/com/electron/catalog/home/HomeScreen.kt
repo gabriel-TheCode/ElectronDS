@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.EvStation
 import androidx.compose.material.icons.outlined.Widgets
@@ -47,9 +46,6 @@ import com.electron.designsystem.components.icon.models.IconUiModel
 import com.electron.designsystem.components.listitem.ElectronListItem
 import com.electron.designsystem.components.listitem.models.ListItemLeading
 import com.electron.designsystem.components.listitem.models.ListItemUiModel
-import com.electron.designsystem.components.tag.ElectronTag
-import com.electron.designsystem.components.tag.models.TagTone
-import com.electron.designsystem.components.tag.models.TagUiModel
 import com.electron.designsystem.foundation.ElectronTheme
 import com.electron.designsystem.layout.ElectronScaffold
 import com.electron.designsystem.tokens.ElectronSpacing
@@ -64,8 +60,8 @@ private val LogoSize = 64.dp
 
 /**
  * Home: who we are (logo, name, one sentence), what's inside (three
- * figures), and two ways in. The components entry is the primary action;
- * the demo is the secondary one. Pure view of the app state: every action
+ * figures), and two ways in. Both entries are equal choices, so they carry
+ * the same action style. Pure view of the app state: every action
  * is an [AppIntent].
  */
 @Composable
@@ -131,21 +127,18 @@ private fun Hero() {
             modifier = Modifier.size(LogoSize)
         )
         Spacer(modifier = Modifier.height(ElectronSpacing.xl))
-        ElectronTag(
-            TagUiModel.Text(
-                text = "Design system for Jetpack Compose",
-                tone = TagTone.Brand,
-                leadingIcon = Icons.Outlined.Bolt
-            )
-        )
-        Spacer(modifier = Modifier.height(ElectronSpacing.md))
         Text(
             text = "Electron",
             style = ElectronTheme.typography.displayLarge,
             color = ElectronTheme.colors.content.primary,
             modifier = Modifier.semantics { heading() }
         )
-        Spacer(modifier = Modifier.height(ElectronSpacing.sm))
+        Text(
+            text = "Design system for Jetpack Compose",
+            style = ElectronTheme.typography.titleMedium,
+            color = ElectronTheme.colors.brand.primary
+        )
+        Spacer(modifier = Modifier.height(ElectronSpacing.md))
         Text(
             text = "Precise, calm components for energy, fintech and data-heavy apps. " +
                 "Three strict layers, semantic tokens, and a dark theme that remaps instead of inverting.",
@@ -199,7 +192,7 @@ private fun Entries(isExpanded: Boolean, onIntent: (AppIntent) -> Unit) {
             avatar = AvatarUiModel.Default(Icons.Outlined.EvStation, AvatarSize.Lg, AvatarTone.Accent),
             title = "Volt demo",
             description = "An EV charging app built only from Electron components: dashboard, live session, account.",
-            button = ButtonUiModel.Secondary(text = "Open the demo", isFullWidth = true),
+            button = ButtonUiModel.Primary(text = "Open the demo", isFullWidth = true),
             onClick = { onIntent(AppIntent.OpenDemo) },
             fillHeight = isExpanded,
             modifier = modifier

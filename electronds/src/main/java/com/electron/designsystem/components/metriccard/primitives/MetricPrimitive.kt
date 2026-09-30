@@ -1,13 +1,9 @@
 package com.electron.designsystem.components.metriccard.primitives
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -15,11 +11,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import com.electron.designsystem.tokens.ElectronMotion
@@ -32,7 +35,8 @@ import com.electron.designsystem.tokens.ElectronSpacing
  *
  * Rhythm: label and figure are one unit (xs apart), the footer is context
  * and sits clearly below (md). When the figure changes it rolls in from
- * below, so a new reading is noticed without a count-up gimmick.
+ * below (see [RollingFigure]), so a new reading is noticed without a
+ * count-up gimmick.
  */
 @Composable
 internal fun MetricPrimitive(
@@ -69,19 +73,12 @@ internal fun MetricPrimitive(
         }
         Spacer(modifier = Modifier.height(ElectronSpacing.xs))
         Row(horizontalArrangement = Arrangement.spacedBy(ElectronSpacing.xs)) {
-            AnimatedContent(
-                targetState = value,
-                transitionSpec = {
-                    (slideInVertically(tween(ElectronMotion.standard, easing = ElectronMotion.easeEnter)) { it / 2 } +
-                        fadeIn(tween(ElectronMotion.standard))) togetherWith
-                        (slideOutVertically(tween(ElectronMotion.quick, easing = ElectronMotion.easeExit)) { -it / 2 } +
-                            fadeOut(tween(ElectronMotion.quick)))
-                },
-                label = "metricValue",
+            RollingFigure(
+                value = value,
+                style = valueStyle,
+                color = valueColor,
                 modifier = Modifier.alignByBaseline()
-            ) { figure ->
-                Text(text = figure, style = valueStyle, color = valueColor, maxLines = 1)
-            }
+            )
             if (unit != null) {
                 Text(
                     text = unit,
@@ -98,5 +95,71 @@ internal fun MetricPrimitive(
                 content = footer
             )
         }
+    }
+}
+
+/** Share of the figure's height travelled by the roll. */
+private const val RollDistance = 0.35f
+
+/**
+ * Figure that rolls to a new value: the old one rises and fades out while
+ * the new one rises into place, on one shared timeline.
+ *
+ * The motion is drawn with graphicsLayer only, never with layout offsets:
+ * both figures stay placed at the same spot, so the row's baseline (and the
+ * unit aligned to it) never moves, and nothing is clipped mid-roll. The
+ * width follows the new figure from the first frame; the outgoing one may
+ * overflow it while it fades.
+ */
+@Composable
+private fun RollingFigure(
+    value: String,
+    style: TextStyle,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    var current by remember { mutableStateOf(value) }
+    var previous by remember { mutableStateOf<String?>(null) }
+    val progress = remember { Animatable(1f) }
+
+    LaunchedEffect(value) {
+        if (value == current) return@LaunchedEffect
+        previous = current
+        current = value
+        progress.snapTo(0f)
+        progress.animateTo(1f, tween(ElectronMotion.standard, easing = ElectronMotion.easeStandard))
+        previous = null
+    }
+
+    Box(modifier = modifier) {
+        previous?.let { outgoing ->
+            Text(
+                text = outgoing,
+                style = style,
+                color = color,
+                maxLines = 1,
+                softWrap = false,
+                modifier = Modifier
+                    .matchParentSize()
+                    .wrapContentWidth(align = Alignment.Start, unbounded = true)
+                    .graphicsLayer {
+                        val p = progress.value
+                        alpha = (1f - p * 2f).coerceIn(0f, 1f)
+                        translationY = -size.height * RollDistance * p
+                    }
+            )
+        }
+        Text(
+            text = current,
+            style = style,
+            color = color,
+            maxLines = 1,
+            softWrap = false,
+            modifier = Modifier.graphicsLayer {
+                val p = progress.value
+                alpha = p
+                translationY = size.height * RollDistance * (1f - p)
+            }
+        )
     }
 }
