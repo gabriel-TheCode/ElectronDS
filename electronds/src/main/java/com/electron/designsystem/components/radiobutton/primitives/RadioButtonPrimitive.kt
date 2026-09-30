@@ -17,14 +17,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import com.electron.designsystem.tokens.ElectronDimens
 import com.electron.designsystem.tokens.ElectronShapes
 import com.electron.designsystem.tokens.ElectronSpacing
 
-/** Radio row: the whole row is selectable, label included. */
+/**
+ * Radio row: the whole row is selectable, label included.
+ *
+ * The pressed/focused highlight has the same breathing room on both sides
+ * of the content: it extends [HighlightInset] past the radio and past the
+ * label. The overflow is outside the row's measured width, so the radio
+ * still lines up with the rest of the screen instead of shifting inward.
+ */
 @Composable
 internal fun RadioButtonPrimitive(
     isSelected: Boolean,
@@ -41,6 +51,7 @@ internal fun RadioButtonPrimitive(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
+            .outsetHorizontally(HighlightInset)
             .defaultMinSize(minHeight = ElectronDimens.minTouchTarget)
             .clip(ElectronShapes.control)
             .selectable(
@@ -51,7 +62,7 @@ internal fun RadioButtonPrimitive(
                 role = Role.RadioButton,
                 onClick = onClick
             )
-            .padding(end = ElectronSpacing.sm)
+            .padding(horizontal = HighlightInset)
             .testTag(testTag)
     ) {
         RadioButton(
@@ -64,5 +75,24 @@ internal fun RadioButtonPrimitive(
             Spacer(modifier = Modifier.width(ElectronSpacing.sm))
             Text(text = label, style = labelStyle, color = labelColor)
         }
+    }
+}
+
+private val HighlightInset: Dp = ElectronSpacing.sm
+
+/**
+ * Measures the content [outset] wider on each side and reports the original
+ * width, so the extra space overflows into the surrounding gutter.
+ */
+private fun Modifier.outsetHorizontally(outset: Dp): Modifier = layout { measurable, constraints ->
+    val px = outset.roundToPx()
+    val placeable = measurable.measure(
+        constraints.copy(
+            minWidth = constraints.minWidth + 2 * px,
+            maxWidth = if (constraints.hasBoundedWidth) constraints.maxWidth + 2 * px else Constraints.Infinity
+        )
+    )
+    layout(placeable.width - 2 * px, placeable.height) {
+        placeable.place(-px, 0)
     }
 }
