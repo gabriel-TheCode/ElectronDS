@@ -1,0 +1,20 @@
+name: three-layer-ui skill
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # The audit detects each rule it claims to check.
+      - run: python3 plugins/three-layer-ui/skills/three-layer-ui/scripts/test_audit.py
+      # ElectronDS, the reference implementation, stays free of blockers.
+      - run: python3 plugins/three-layer-ui/skills/three-layer-ui/scripts/audit.py .

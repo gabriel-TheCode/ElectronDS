@@ -136,3 +136,8 @@ captured off-device.
    import of a `primitives` or `variants` package from feature code.
 4. Tokens are the only source of dimensions, colors, shapes, type and
    motion. Raw values inside `components/` are treated as review failures.
+5. The [`three-layer-ui` skill](../plugins/three-layer-ui/skills/three-layer-ui/SKILL.md)
+   checks all of the above on any Compose or SwiftUI codebase; its
+   [rules](../plugins/three-layer-ui/skills/three-layer-ui/references/rules.md)
+   are this contract as a checklist, with the UI boundary and clean
+   architecture rules for the screens that consume the system.

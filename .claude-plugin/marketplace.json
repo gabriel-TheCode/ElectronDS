@@ -1,0 +1,16 @@
+{
+  "name": "electronds",
+  "owner": { "name": "Gabriel TEKOMBO", "url": "https://github.com/gabriel-TheCode" },
+  "metadata": {
+    "description": "Skills from ElectronDS, the reference three-layer UI design system for Jetpack Compose."
+  },
+  "plugins": [
+    {
+      "name": "three-layer-ui",
+      "source": "./plugins/three-layer-ui",
+      "description": "Audit and fix a Compose or SwiftUI design system and its screens against the three-layer UI architecture and the UI-models-only boundary.",
+      "version": "1.0.0",
+      "category": "development"
+    }
+  ]
+}
