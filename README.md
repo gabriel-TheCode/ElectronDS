@@ -131,6 +131,47 @@ ElectronChip(
 - [Design Decisions](docs/DESIGN_DECISIONS.md) - Rationale behind colors, type, and motion.
 - [Usage Guidelines](docs/USAGE_GUIDELINES.md) - Best practices for feature teams.
 - [Screenshot Tests](docs/SCREENSHOT_TESTS.md) - Visual regression tests (Paparazzi) and how to record them.
+- [three-layer-ui skill](plugins/three-layer-ui/skills/three-layer-ui/SKILL.md) - Audit and fix any Compose or SwiftUI codebase against these rules.
+
+---
+
+## Audit your own codebase: the `three-layer-ui` skill
+
+ElectronDS ships an agent skill that applies these rules to any Jetpack Compose (Android, KMP, Compose Multiplatform) or SwiftUI project. Call it and it:
+
+1. maps the project: design system, screens, architecture, tokens, tests, house rules;
+2. audits every component and screen ([static checks](plugins/three-layer-ui/skills/three-layer-ui/scripts/audit.py) plus a [manual checklist](plugins/three-layer-ui/skills/three-layer-ui/references/rules.md)): three layers, sealed UI models, signals, tokens, previews, screenshot tests, catalog, and the UI boundary (screens consume UI models, never `DomainModel`s);
+3. reports each component's gaps and asks what to fix (everything, blockers and majors, chosen components, or nothing);
+4. locks the current look with screenshot tests, then fixes bottom-up (tooling, tokens, foundation, components, composites, overlays, features, architecture) without visual regression;
+5. verifies (build, tests, screenshot diffs, a second audit), updates the docs, opens the PR and merges it if you allowed it;
+6. ends with a before/after report.
+
+### Install in Claude Code
+
+```
+/plugin marketplace add gabriel-TheCode/ElectronDS
+/plugin install three-layer-ui@electronds
+```
+
+On Claude Code 2.1.275 or later, one line does both:
+
+```
+/plugin install three-layer-ui --marketplace gabriel-TheCode/ElectronDS
+```
+
+Then ask "audit my design system", or call the skill directly with `/three-layer-ui:three-layer-ui`.
+
+### Other agents
+
+The skill is plain Markdown plus a Python 3 script with no dependencies. Copy `plugins/three-layer-ui/skills/three-layer-ui/` into `~/.claude/skills/` (or your agent's skills folder), or point any coding agent at its `SKILL.md`.
+
+### The audit alone
+
+```bash
+python3 plugins/three-layer-ui/skills/three-layer-ui/scripts/audit.py path/to/your/repo
+```
+
+Markdown or JSON (`--format json`), exit code 1 on blockers, so it can gate CI. ElectronDS itself audits clean.
 
 ---
 

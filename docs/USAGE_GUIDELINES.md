@@ -239,3 +239,15 @@ Adding a new component: copy the folder shape of `components/tag` (the
 smallest complete example) and keep the visibility rules. For a composite
 component, look at `components/listitem`: its variants reuse public Electron
 components and its UI model embeds their public UI models.
+
+## Checking your code
+
+Run the audit on your app before review; it flags imports of internals,
+domain models reaching screens, lambdas in UI models and raw values:
+
+```bash
+python3 plugins/three-layer-ui/skills/three-layer-ui/scripts/audit.py path/to/your/app
+```
+
+The [`three-layer-ui` skill](../plugins/three-layer-ui/skills/three-layer-ui/SKILL.md)
+runs the same audit plus the manual review, and fixes what you approve.
