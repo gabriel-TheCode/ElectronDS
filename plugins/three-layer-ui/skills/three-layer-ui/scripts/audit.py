@@ -85,6 +85,8 @@ def find_features(root: Path, design_systems):
                 if "/core/presentation" in str(path) or "commonMain" in str(path) or re.search(r"/(test|androidTest|screenshotTest)/", str(path)):
                     continue
                 features.append(path)
+    # On a case-insensitive disk, rglob("features") also matches Features/: keep the name as it is on disk.
+    features = [p for p in features if p.name in {c.name for c in p.parent.iterdir()}]
     unique = []
     for path in sorted(set(features), key=lambda p: len(str(p))):
         if not any(str(path).startswith(str(u) + "/") for u in unique):
