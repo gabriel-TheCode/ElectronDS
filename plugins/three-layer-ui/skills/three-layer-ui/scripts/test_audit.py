@@ -52,6 +52,8 @@ struct ChipFact: View {
     "core/domain/src/commonMain/kotlin/acme/domain/usecases/PayCall.kt": "package acme\nclass PayCall { operator fun invoke() = Unit }\n",
     "core/data/src/commonMain/kotlin/acme/data/AdherentJson.kt": "package acme\n@Serializable\ndata class AdherentJson(val id: Long)\n",
     "core/presentation/src/commonMain/kotlin/acme/presentation/home/uimodel/HomeCopy.kt": "package acme\nobject HomeCopy { const val TITLE = \"Rien à régler\" }\nenum class Tone { A }\n",
+    # A KMP feature module: its presentation imports its own domain, which is not UI code reaching the domain.
+    "feature/members/presentation/src/commonMain/kotlin/acme/feature/members/presentation/MembersStore.kt": "package acme\nimport acme.feature.members.domain.models.MemberDomainModel\nclass MembersStore\n",
     "feature/wallet/data/build.gradle.kts": "dependencies { implementation(project(\":feature:members:domain\")) }\n",
     "ios/Kit/Sources/AcmeDesignSystem/Components/Tag/Models/TagLabels.swift": "public struct TagLabels { public var busy: String = \"En cours\" }\n",
     "ios/App/Features/Home/HomeUiMapper.swift": """import Shared
@@ -96,7 +98,9 @@ with tempfile.TemporaryDirectory() as tmp:
         (root / path).write_text(text)
     run = subprocess.run([sys.executable, str(Path(__file__).with_name("audit.py")), str(root), "--format", "json"],
                          capture_output=True, text=True)
-    found = {(f["rule"], f["severity"]) for f in json.loads(run.stdout)["findings"]}
+    report = json.loads(run.stdout)
+    found = {(f["rule"], f["severity"]) for f in report["findings"]}
+    assert not any(f["rule"] == "FT-01" and "feature/members" in f["file"] for f in report["findings"]), "a KMP feature module was audited as UI code"
     missing = EXPECTED - found
     assert not missing, f"not detected: {sorted(missing)}"
     assert run.returncode == 1, "blockers must exit with 1"
