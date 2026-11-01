@@ -51,7 +51,7 @@ One callback parameter per interaction, named `on` + action: `onClick` for the m
 Composites use other components through their public entries only. Importing another component's `variants` or `primitives` package is a blocker. In Swift, where a module has no imports between files, the audit checks the internal type names a component uses instead.
 
 ### DS-09 No copy (major) · auto + manual
-Every visible string comes from the UI model, including content descriptions and accessibility labels. No literal in variants or primitives, no feature string resources.
+A design system is content-agnostic: it holds no text and references no string resource. Every visible string comes from the UI model, including content descriptions and accessibility labels: no literal in variants or primitives, and no default text in UI models (`String = "Cancel"`): the caller passes every text.
 
 ### DS-10 Tokens only (major) · auto + manual
 No raw `dp`, `sp`, `Color(0x…)` or named colors in components. Values come from tokens (`ElectronDimens`, theme colors, typography, shapes, motion). When several platforms share a design, one token source generates all of them. `0.dp` and values inside previews are fine. Letter spacing, line heights and font sizes are tokens too.
@@ -101,6 +101,9 @@ Screens have previews with fake states (content, loading, empty, error) and scre
 ### FT-07 One source for what is shown (major) · auto + manual
 In a Kotlin Multiplatform app with native UIs, everything the screens show and decide lives once, in the shared presentation: final wording (titles, labels, plurals, joined lines, formatted amounts and dates, accessibility labels) and business decisions (the tone of a status, whether a row can be chosen, which main action a sheet offers). Static text sits in a per-feature `XxxCopy` object, dynamic text and decisions in fields of the feature UI models, all covered by presentation tests. Platform mappers are thin: feature UI model in, design-system UI model out, plus platform icons; no wording, plurals or business conditionals. Wording that exists on one platform only (a system idiom) may stay there. The audit counts user-facing literals in platform UI code of a KMP project.
 
+### FT-09 No hardcoded text (major) · auto + manual
+Every displayed text lives in string resources, one file per language, with plurals and parameters, and typed accessors (generated or from the platform). Not in screens, not in mappers, not in constant objects in code. On KMP with native UIs the resources sit in each feature's presentation module and presentation hands finished text to both apps; app name, permission prompts and other system texts use native resources (`strings.xml`, `InfoPlist.xcstrings`). Preview and test data live in fixtures. The audit counts user-facing literals in shared presentation code; platform UI code is covered by FT-07.
+
 ### FT-08 Kotlin to Swift boundary (minor) · auto
 On KMP with SwiftUI, Kotlin enums and sealed classes reach Swift as classes, so a Swift `switch` needs `default:` and a new Kotlin case fails silently; Flow and suspend need hand-written bridges. Use SKIE (`co.touchlab.skie`): Kotlin enums become Swift enums, sealed classes switch exhaustively with `onEnum(of:)`, StateFlow is an `AsyncSequence`, suspend is `async`. The audit flags a KMP project with a SwiftUI app and no SKIE, and `default:` in Swift feature switches.
 
@@ -112,14 +115,17 @@ On KMP with SwiftUI, Kotlin enums and sealed classes reach Swift as classes, so 
 ### CA-02 Use cases (major) · manual
 One class per use case, named verb + noun (`PayContributionCall`, `ObserveHousehold`), with one `operator fun invoke`. Presentation calls use cases, never repositories.
 
-### CA-03 Models and mappers (major) · manual
-Suffixes say the layer: `XxxDomainModel` in domain, `XxxDto`/`XxxEntity` in data, `XxxUiModel` and `XxxUiState` in presentation. Each boundary has its mapper (data to domain in data, domain to UI in presentation), `internal` to its module, with unit tests.
+### CA-03 Models and mappers (major) · auto + manual
+Every model type carries its layer's suffix, small enums and value types included: `XxxDomainModel` in domain, `XxxDto` (network) and `XxxEntity` (local storage) in data, `XxxUiModel` (plus `XxxUiState`, `XxxUiEvent`, `XxxUiEffect`) in presentation. Use cases and repository contracts are not models and keep plain names. Each boundary has its mapper (data to domain in data, domain to UI in presentation), `internal` to its module, with unit tests. The audit checks top-level types in `domain`, `@Serializable` types in `data` and types in presentation `uimodel` folders.
 
 ### CA-04 Presentation state (minor) · manual
 One UI state per screen (`XUiState`: loading, content, error), one event type (`XUiEvent`) through `onEvent`, one-shot effects through `SharedFlow` or `Channel`. State exposed with `stateIn(scope, SharingStarted.WhileSubscribed(5_000), initial)`.
 
 ### CA-05 Modules (minor) · manual
-Domain, data and presentation are separate modules (or at least packages with enforced visibility). On KMP, the iOS framework exports presentation only.
+Feature first, layers inside: `feature/<name>/{domain, data, presentation}` as separate modules, plus `core/` modules for what every feature shares (common types, network, auth, testing) and an assembly module that wires the graph. Layer-only modules (one domain, one data, one presentation for the whole app) grow without boundaries between features; feature-only modules (layers as packages) lose the compiler's guarantee of the layer direction, and on KMP the iOS framework would export domain models. The iOS framework exports presentation modules only. Convention plugins (`build-logic`) keep each module's build file to a few lines.
+
+### CA-06 Feature independence (blocker) · auto
+A feature module never depends on another feature: features depend on `core` only; what two features share moves to `core`, and a screen that aggregates several features (a dashboard) reads their domain through the assembly module. The audit reads the build files under `feature/` or `features/`.
 
 ## SwiftUI equivalents
 

@@ -48,6 +48,12 @@ struct ChipFact: View {
     var body: some View { TagPill() }
 }
 """,
+    "core/domain/src/commonMain/kotlin/acme/domain/models/Money.kt": "package acme\ndata class Money(val cents: Long)\n",
+    "core/domain/src/commonMain/kotlin/acme/domain/usecases/PayCall.kt": "package acme\nclass PayCall { operator fun invoke() = Unit }\n",
+    "core/data/src/commonMain/kotlin/acme/data/AdherentJson.kt": "package acme\n@Serializable\ndata class AdherentJson(val id: Long)\n",
+    "core/presentation/src/commonMain/kotlin/acme/presentation/home/uimodel/HomeCopy.kt": "package acme\nobject HomeCopy { const val TITLE = \"Rien à régler\" }\nenum class Tone { A }\n",
+    "feature/wallet/data/build.gradle.kts": "dependencies { implementation(project(\":feature:members:domain\")) }\n",
+    "ios/Kit/Sources/AcmeDesignSystem/Components/Tag/Models/TagLabels.swift": "public struct TagLabels { public var busy: String = \"En cours\" }\n",
     "ios/App/Features/Home/HomeUiMapper.swift": """import Shared
 extension Tone {
     var label: String {
@@ -78,6 +84,9 @@ EXPECTED = {
     ("DS-15", "minor"),    # Swift: .system(size:)
     ("FT-07", "major"),    # wording in platform UI code of a KMP app (Kotlin and Swift)
     ("FT-08", "minor"),    # KMP + SwiftUI without SKIE, and `default:` in a Swift switch
+    ("CA-03", "major"),    # Money (domain), AdherentJson (data), Tone (presentation) without their suffix
+    ("CA-06", "blocker"),  # feature wallet depends on feature members
+    ("FT-09", "major"),    # text written in a presentation Copy object
 }
 
 with tempfile.TemporaryDirectory() as tmp:

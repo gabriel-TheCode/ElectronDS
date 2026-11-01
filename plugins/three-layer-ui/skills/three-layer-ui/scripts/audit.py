@@ -35,7 +35,8 @@ def walk(root: Path, suffix: str):
     for path in root.rglob(f"*{suffix}"):
         if any(part in SKIP_DIRS for part in path.parts):
             continue
-        if "/test/" in str(path) or "/androidTest/" in str(path) or "/screenshotTest/" in str(path) or "Tests/" in str(path):
+        # Test source sets (test, androidTest, commonTest, screenshotTest, XCTest targets) are not audited.
+        if any(part in ("test", "tests") or part.endswith(("Test", "Tests")) for part in path.parts):
             continue
         yield path
 
@@ -270,6 +271,8 @@ SWIFT_CLOSURE_PROP = re.compile(r"^\s*(public\s+)?(let|var)\s+\w+\s*:\s*(@escapi
 SWIFT_TYPE_DECL = re.compile(r"^\s*(?:private\s+|fileprivate\s+|internal\s+)?(?:final\s+)?(?:struct|enum|class)\s+(\w+)", re.M)
 SWIFT_IDENTIFIER = re.compile(r"\b[A-Z]\w+\b")
 SWIFT_FIXED_FONT = re.compile(r"\.system\(size:")
+SWIFT_TEXT_LITERAL = re.compile(r'\bText\(\s*"[^"]*[A-Za-zÀ-ÿ]{3,}')
+SWIFT_STRING_DEFAULT = re.compile(r'String\??\s*=\s*"[^"]*[A-Za-zÀ-ÿ]{2,}')
 SWIFT_RAW = re.compile(r"\.padding\(\s*\d+|\.frame\((width|height|minHeight|maxWidth):\s*\d+|Color\(\s*red:|Color\(\.sRGB|\.font\(\.system\(size:\s*\d+|cornerRadius:\s*\d+")
 
 
@@ -329,6 +332,11 @@ def audit_swift_ds(root: Path, ds: Path, findings):
                     findings.append(Finding("DS-06", "blocker", rel(root, path), i + 1, "UI model stores a closure: signals are view parameters."))
                 if layer != "Models" and not in_preview and SWIFT_RAW.search(line):
                     findings.append(Finding("DS-10", "major", rel(root, path), i + 1, f"Raw value `{SWIFT_RAW.search(line).group(0)}`: take it from the tokens."))
+                elif not in_preview and layer != "Models" and SWIFT_TEXT_LITERAL.search(line):
+                    findings.append(Finding("DS-09", "major", rel(root, path), i + 1, "Copy written inside the design system: text comes from the UI model."))
+                elif layer == "Models" and SWIFT_STRING_DEFAULT.search(line):
+                    findings.append(Finding("DS-09", "major", rel(root, path), i + 1,
+                                            "A UI model gives a text a default value: the design system carries no copy, the caller passes every text."))
                 elif not in_preview and SWIFT_FIXED_FONT.search(line):
                     findings.append(Finding("DS-15", "minor", rel(root, path), i + 1,
                                             "`.system(size:)` ignores Dynamic Type: use a text style, Font.custom(_:size:relativeTo:) or @ScaledMetric."))
@@ -370,6 +378,84 @@ def platform_wording(root: Path, path: Path, lines, preview_marker, findings):
     if count:
         findings.append(Finding("FT-07", "major", rel(root, path), first,
                                 f"{count} user-facing text(s) in platform UI code: in a multiplatform app, wording and screen decisions belong to the shared presentation."))
+
+
+# ---------------------------------------------------------------- architecture
+
+KOTLIN_TOP_DECL = re.compile(r"^(?:public |internal |private )?(?:data |enum |sealed |value |abstract |open |annotation )*(class|interface|object) (\w+)")
+LAYER_SUFFIX = {"domain": ("DomainModel",), "presentation": ("UiModel", "UiState", "UiEvent", "UiEffect", "Copy", "Strings")}
+
+
+def layer_of(path: Path):
+    parts = path.parts
+    for layer in ("domain", "data", "presentation"):
+        if layer in parts:
+            return layer
+    return None
+
+
+def audit_architecture(root: Path, findings, kmp=False):
+    """CA-03 suffixes by layer, CA-06 feature modules independent, FT-09 no hardcoded text in presentation."""
+    for path in walk(root, ".kt"):
+        layer = layer_of(path.relative_to(root))
+        if not layer:
+            continue
+        lines = lines_of(path)
+        text = "\n".join(lines)
+        generated = "Generated" in text[:300]
+        for i, line in enumerate(lines):
+            match = KOTLIN_TOP_DECL.match(line)
+            if not match or generated:
+                continue
+            kind, name = match.groups()
+            if layer == "data":
+                annotated = i > 0 and lines[i - 1].strip().startswith("@Serializable")
+                if annotated and not name.endswith(("Dto", "Entity")):
+                    findings.append(Finding("CA-03", "major", rel(root, path), i + 1,
+                                            f"`{name}` is a data model: suffix it `Dto` (network) or `Entity` (local storage)."))
+                continue
+            is_use_case = "operator fun invoke" in text and kind == "class"
+            is_contract = name.endswith(("Repository", "RepositoryImpl", "DataSource", "Provider", "Graph", "Store", "Mapper"))
+            if layer == "domain" and not (is_use_case or is_contract) and not name.endswith(LAYER_SUFFIX["domain"]):
+                findings.append(Finding("CA-03", "major", rel(root, path), i + 1,
+                                        f"`{name}` is a domain model: suffix it `DomainModel` (enums and value types included)."))
+            if layer == "presentation" and "uimodel" in path.parts and not name.endswith(LAYER_SUFFIX["presentation"]):
+                findings.append(Finding("CA-03", "major", rel(root, path), i + 1,
+                                        f"`{name}` is a presentation model: suffix it `UiModel` (or UiState, UiEvent, UiEffect)."))
+        if kmp and layer == "presentation" and "commonMain" in path.parts and not generated:
+            presentation_wording(root, path, lines, findings)
+
+    for build in list(root.rglob("build.gradle.kts")) + list(root.rglob("build.gradle")):
+        if any(x in SKIP_DIRS for x in build.parts):
+            continue
+        parts = build.relative_to(root).parts
+        for anchor in ("feature", "features"):
+            if anchor in parts and parts.index(anchor) + 1 < len(parts) - 1:
+                own = parts[parts.index(anchor) + 1]
+                for i, line in enumerate(lines_of(build)):
+                    for other in re.findall(rf'project\(":{anchor}:([\w-]+)', line) + re.findall(rf"projects\.{anchor}\.(\w+)", line):
+                        if other != own:
+                            findings.append(Finding("CA-06", "blocker", rel(root, build), i + 1,
+                                                    f"Feature `{own}` depends on feature `{other}`: features only depend on core modules; share through core or compose in the app."))
+
+
+def presentation_wording(root: Path, path: Path, lines, findings):
+    """FT-09: displayed text lives in string resources, not in code (Copy objects included)."""
+    count, first = 0, None
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith(("//", "*", "/*", "import ", "package ", "@")):
+            continue
+        for text in USER_TEXT.findall(line):
+            words = re.sub(r"\$\{.*?\}|\$\w+", " ", text)
+            if "://" in text or not re.search(r"[A-Za-zÀ-ÿ]{2,}", words):
+                continue
+            if re.search(r"[A-Za-zÀ-ÿ]{2,}\s+[A-Za-zÀ-ÿ]", words) or re.fullmatch(r"[A-ZÀ-Ý][a-zà-ÿ]{3,}[.!?]?", words.strip()):
+                count += 1
+                first = first or i + 1
+    if count:
+        findings.append(Finding("FT-09", "major", rel(root, path), first,
+                                f"{count} displayed text(s) written in code: move them to the feature's string resources (one file per language, generated accessors)."))
 
 
 # ---------------------------------------------------------------- report
@@ -425,6 +511,7 @@ def main():
     for feature in features:
         audit_compose_features(root, feature, ds_packages, findings, kmp)
         audit_swift_features(root, feature, findings, kmp)
+    audit_architecture(root, findings, kmp)
 
     if args.format == "json":
         report = json.dumps({"designSystems": [rel(root, d) for d in design_systems], "features": [rel(root, f) for f in features],
