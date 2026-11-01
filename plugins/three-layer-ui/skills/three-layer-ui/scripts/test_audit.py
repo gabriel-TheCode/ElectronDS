@@ -26,7 +26,37 @@ public fun TagText() { Text("Hello", modifier = Modifier.padding(12.dp)) }
 import acme.domain.models.HouseholdDomainModel
 import acme.designsystem.components.tag.variants.TagText
 @Composable
-fun HomeScreen(store: Store) { val s by store.state.collectAsStateWithLifecycle() }
+fun HomeScreen(store: Store) { val s by store.state.collectAsStateWithLifecycle(); Text("Rien à régler") }
+""",
+    # Kotlin Multiplatform marker: a shared module.
+    "shared/src/commonMain/kotlin/acme/Shared.kt": "package acme\n",
+    "ios/Kit/Sources/AcmeDesignSystem/Components/Tag/AcmeTag.swift": """import SwiftUI
+public struct AcmeTag: View {
+    public var body: some View { TagPill() }
+}
+#Preview { AcmeTag() }
+""",
+    "ios/Kit/Sources/AcmeDesignSystem/Components/Tag/Models/TagUiModel.swift": "public enum TagUiModel: Hashable { case pill(String) }\n",
+    "ios/Kit/Sources/AcmeDesignSystem/Components/Tag/Variants/TagPill.swift": """import SwiftUI
+struct TagPill: View {
+    var body: some View { Image(systemName: "clock").font(.system(size: AcmeDimens.icon)) }
+}
+""",
+    "ios/Kit/Sources/AcmeDesignSystem/Components/Chip/Models/ChipUiModel.swift": "public enum ChipUiModel: Hashable { case fact(String) }\n",
+    "ios/Kit/Sources/AcmeDesignSystem/Components/Chip/Variants/ChipFact.swift": """import SwiftUI
+struct ChipFact: View {
+    var body: some View { TagPill() }
+}
+""",
+    "ios/App/Features/Home/HomeUiMapper.swift": """import Shared
+extension Tone {
+    var label: String {
+        switch self {
+        case .success: "Tout est en ordre"
+        default: "À régler"
+        }
+    }
+}
 """,
 }
 
@@ -44,6 +74,10 @@ EXPECTED = {
     ("FT-01", "blocker"),  # domain model in the UI
     ("FT-02", "major"),    # screen collects state
     ("FT-04", "blocker"),  # screen imports a variant
+    ("DS-08", "blocker"),  # Swift: Chip names Tag's internal TagPill
+    ("DS-15", "minor"),    # Swift: .system(size:)
+    ("FT-07", "major"),    # wording in platform UI code of a KMP app (Kotlin and Swift)
+    ("FT-08", "minor"),    # KMP + SwiftUI without SKIE, and `default:` in a Swift switch
 }
 
 with tempfile.TemporaryDirectory() as tmp:

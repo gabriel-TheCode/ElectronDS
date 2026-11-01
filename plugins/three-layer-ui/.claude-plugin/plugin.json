@@ -1,6 +1,6 @@
 {
   "name": "three-layer-ui",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Audits a Jetpack Compose or SwiftUI codebase against the three-layer UI architecture (Primitive, Variant, Component) and the clean UI boundary (screens consume UI models only), reports every gap, fixes what you approve with visual parity, then documents, ships and reports.",
   "author": { "name": "Gabriel TEKOMBO", "url": "https://github.com/gabriel-TheCode" },
   "homepage": "https://github.com/gabriel-TheCode/ElectronDS",

@@ -283,6 +283,98 @@ internal fun HouseholdDomainModel.toUiModel(): HomeUiModel = /* … */
 
 On KMP, the shared framework exports presentation only: `api(project(":core:presentation"))`, `implementation` for domain and data.
 
+## Kotlin Multiplatform with native UIs
+
+### Wording and decisions in the shared presentation (FT-07)
+
+```kotlin
+// core/presentation/.../home/uimodel/HomeCopy.kt
+object HomeCopy {
+    const val TO_DO_TITLE = "À régler"
+    const val NOTHING_TO_PAY = "Rien à régler pour le moment."
+}
+
+// core/presentation/.../home/mapper/HomeUiMapper.kt (internal, tested)
+internal fun callsLabel(count: Int): String? = when (count) {
+    0 -> null
+    1 -> "1 appel"
+    else -> "$count appels"
+}
+
+data class RelativeUiModel(
+    val name: String,
+    val status: String,
+    val statusTone: Tone,          // decided once: quiet when protected, toned otherwise
+    val canBeDeclared: Boolean,    // decided once, both apps dim the row
+)
+```
+
+Platform mappers then only translate:
+
+```kotlin
+// Android
+fun RelativeUiModel.toListItem(position: ListPosition) = ListItemUiModel.Person(
+    name, status, AvatarUiModel.Person(initials, statusTone.toElectronTone()), isEnabled = canBeDeclared, position = position,
+)
+```
+
+```swift
+// iOS
+extension RelativeUiModel {
+    func toListItem() -> ListItemUiModel {
+        .person(.init(name: name, detail: status, avatar: .person(.init(initials: initials, ring: statusTone.electron)), isEnabled: canBeDeclared))
+    }
+}
+```
+
+### SKIE (FT-08)
+
+```kotlin
+// libs.versions.toml: skie = "<version supporting your Kotlin>"; plugin co.touchlab.skie
+// shared/build.gradle.kts (the module that builds the iOS framework)
+plugins { alias(libs.plugins.skie) }
+```
+
+```swift
+// Exhaustive over a Kotlin enum: no default
+extension Tone {
+    var electron: ElectronTone {
+        switch self {
+        case .success: .success
+        case .warning: .warning
+        case .danger: .danger
+        case .brand: .brand
+        case .neutral: .neutral
+        }
+    }
+}
+
+// Exhaustive over a Kotlin sealed class
+switch onEnum(of: state) {
+case .loading: ElectronSkeleton(.init(label: CommonCopy.shared.loading))
+case .content(let content): HomeContent(content)
+case .error(let error): ElectronEmptyState(error.toEmptyState())
+}
+
+// A store's StateFlow, observed without polling
+@MainActor @Observable
+final class StoreModel<S: AnyObject, E: AnyObject> {
+    private(set) var state: S
+    @ObservationIgnored private let store: Store<S, E>
+    @ObservationIgnored private var observation: Task<Void, Never>?
+
+    init(_ store: Store<S, E>) {
+        self.store = store
+        state = store.currentState
+        observation = Task { [weak self] in
+            for await state in store.state { self?.state = state }
+        }
+    }
+
+    deinit { observation?.cancel(); store.close() }
+}
+```
+
 ## SwiftUI
 
 ```swift
