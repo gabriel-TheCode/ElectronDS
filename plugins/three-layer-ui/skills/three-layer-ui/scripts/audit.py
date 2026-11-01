@@ -83,7 +83,11 @@ def find_features(root: Path, design_systems):
         for path in root.rglob(name):
             if path.is_dir() and not any(p in SKIP_DIRS for p in path.parts) and not any(str(path).startswith(d) for d in ds) \
                     and (any(path.rglob("*.kt")) or any(path.rglob("*.swift"))):
-                if "/core/presentation" in str(path) or "commonMain" in str(path) or re.search(r"/(test|androidTest|screenshotTest)/", str(path)):
+                if "/core/presentation" in str(path) or "commonMain" in str(path) \
+                        or any(part in ("test", "tests") or part.endswith(("Test", "Tests")) for part in path.parts):
+                    continue
+                # Shared Kotlin modules (feature/<name>/{domain,data,presentation}) are layers, not UI code.
+                if any(path.rglob("commonMain")):
                     continue
                 features.append(path)
     # On a case-insensitive disk, rglob("features") also matches Features/: keep the name as it is on disk.
