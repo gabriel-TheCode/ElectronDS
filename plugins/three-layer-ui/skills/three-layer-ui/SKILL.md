@@ -28,7 +28,7 @@ Read before judging. Record, in a short working note:
 - **Stack**: Gradle files (AGP and Kotlin versions, KMP or Android only), `Package.swift` or `.xcodeproj` for SwiftUI.
 - **Design system roots**: modules or packages that hold components (`designsystem`, `ds`, `ui-kit`, `LRCDesignSystem`…). The component prefix (`Electron`, `Lrc`…).
 - **Feature UI roots**: `ui/`, `presentation/`, `feature*/`, `Screens/`.
-- **Architecture**: domain, data and presentation modules or packages; use cases; how state reaches the screens (ViewModel, Store, MVI).
+- **Architecture**: domain, data and presentation modules or packages; use cases; how state reaches the screens (ViewModel, Store, MVI). On Kotlin Multiplatform with native UIs: where the wording lives (shared presentation or each platform's mappers) and how Swift reads Kotlin types (SKIE or not).
 - **Tokens**: where colors, dimensions, type and motion come from; whether one source generates both platforms.
 - **Tests and tools**: unit tests, screenshot tests (Paparazzi, Compose Preview Screenshot Testing, Roborazzi, swift-snapshot-testing), catalog app, CI workflows.
 - **House rules**: `CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md`, PR template, branch naming, merge strategy, commit style. They win over this skill on anything they cover.
@@ -84,7 +84,7 @@ Work in this order; each layer only depends on the ones before it. Build after e
 4. **Leaf components** (no other component inside): button, icon, tag, avatar, field…
 5. **Composites**, after the components they use.
 6. **Overlays**: dialog, sheet, menu, tooltip, with the surface split from the window.
-7. **Features**: Route/Screen split, feature UI models, mappers to component UI models, removal of domain types from the UI, callers migrated to the new APIs.
+7. **Features**: Route/Screen split, feature UI models, mappers to component UI models, removal of domain types from the UI, callers migrated to the new APIs. On KMP, first move wording and screen decisions into the shared presentation (FT-07) and add SKIE (FT-08), then thin each platform's mappers.
 8. **Architecture**, only when in scope: use cases with one `invoke`, `DomainModel`/`UiModel` naming, mappers at each boundary, dependency direction.
 9. **Previews, screenshot tests, catalog** for every component you created or changed.
 

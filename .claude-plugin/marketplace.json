@@ -9,7 +9,7 @@
       "name": "three-layer-ui",
       "source": "./plugins/three-layer-ui",
       "description": "Audit and fix a Compose or SwiftUI design system and its screens against the three-layer UI architecture and the UI-models-only boundary.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "development"
     }
   ]

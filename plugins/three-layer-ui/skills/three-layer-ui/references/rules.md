@@ -48,7 +48,7 @@ A component driven by loose parameters instead of a model is a major finding.
 One callback parameter per interaction, named `on` + action: `onClick` for the main tap, `on<Element>Click` for a secondary element, `on<Value>Change` for values, a domain verb for a specific action (`onClear`). `() -> Unit` for actions; carry the new value only for changes. The main interaction is required and comes right after `uiModel`; callbacks of optional elements default to `{}` and come after `modifier`. Variants and primitives forward callbacks unchanged.
 
 ### DS-08 Composition (blocker) · auto
-Composites use other components through their public entries only. Importing another component's `variants` or `primitives` package is a blocker.
+Composites use other components through their public entries only. Importing another component's `variants` or `primitives` package is a blocker. In Swift, where a module has no imports between files, the audit checks the internal type names a component uses instead.
 
 ### DS-09 No copy (major) · auto + manual
 Every visible string comes from the UI model, including content descriptions and accessibility labels. No literal in variants or primitives, no feature string resources.
@@ -69,7 +69,7 @@ Dialogs, sheets, menus and tooltips draw their visible surface in a separate int
 Components are stateless apart from transient visual state (animation, press, scroll position). Persistent or shared state is hoisted: value plus `on…Change`, or a public `ElectronXState` with `rememberElectronXState()`.
 
 ### DS-15 Accessibility (major) · manual
-Touch targets of at least 48dp (44pt on iOS). Labels from the model. Rows merge their semantics and expose a role. Text scales with the system font size without clipping (check at 1.5x and 2x). Contrast of text on its container meets WCAG AA.
+Touch targets of at least 48dp (44pt on iOS). Labels from the model. Rows merge their semantics and expose a role. Text scales with the system font size without clipping (check at 1.5x and 2x). Contrast of text on its container meets WCAG AA. On iOS, `.font(.system(size:))` ignores Dynamic Type (auto, minor): use text styles, `Font.custom(_:size:relativeTo:)`, and `@ScaledMetric` for icon and control sizes that should grow with text.
 
 ### DS-16 Screenshot tests (minor; major during a refactor) · manual
 Every component and variant in light and dark, text components at font scale 1.5, overlays through their surfaces. They are the proof of visual parity during a refactor, so a refactor without them starts by adding them.
@@ -98,6 +98,12 @@ Strings live in the feature's resources or in presentation, localized. Screens d
 ### FT-06 Screen tests (minor) · manual
 Screens have previews with fake states (content, loading, empty, error) and screen-level screenshot tests for the states that look different.
 
+### FT-07 One source for what is shown (major) · auto + manual
+In a Kotlin Multiplatform app with native UIs, everything the screens show and decide lives once, in the shared presentation: final wording (titles, labels, plurals, joined lines, formatted amounts and dates, accessibility labels) and business decisions (the tone of a status, whether a row can be chosen, which main action a sheet offers). Static text sits in a per-feature `XxxCopy` object, dynamic text and decisions in fields of the feature UI models, all covered by presentation tests. Platform mappers are thin: feature UI model in, design-system UI model out, plus platform icons; no wording, plurals or business conditionals. Wording that exists on one platform only (a system idiom) may stay there. The audit counts user-facing literals in platform UI code of a KMP project.
+
+### FT-08 Kotlin to Swift boundary (minor) · auto
+On KMP with SwiftUI, Kotlin enums and sealed classes reach Swift as classes, so a Swift `switch` needs `default:` and a new Kotlin case fails silently; Flow and suspend need hand-written bridges. Use SKIE (`co.touchlab.skie`): Kotlin enums become Swift enums, sealed classes switch exhaustively with `onEnum(of:)`, StateFlow is an `AsyncSequence`, suspend is `async`. The audit flags a KMP project with a SwiftUI app and no SKIE, and `default:` in Swift feature switches.
+
 ## CA: clean architecture
 
 ### CA-01 Dependency direction (blocker) · manual
@@ -123,7 +129,8 @@ Domain, data and presentation are separate modules (or at least packages with en
 | DS-02 | Variants and primitives have no `public` modifier (internal is the default); entries and models are `public` |
 | DS-03 | `public struct ElectronName: View` with `let model: NameUiModel`, `body` switches over the model |
 | DS-06 | `public enum NameUiModel: Equatable, Sendable` with associated values, or structs; no closures, no `Color`/`CGFloat`, no domain types |
-| DS-07 | Closure parameters on the view's init, named `onTap`, `onDismiss`, `on<Element>Tap`; never stored in the model |
+| DS-07 | Closure parameters on the view's init, named `onTap`, `onDismiss`, `on<Element>Tap`; never stored in the model. A `Hashable` model cannot hold a closure, so the compiler enforces it |
+| DS-08 | No imports inside a module: checked by the internal type names a component uses. A SwiftPM target per component with `package` access would make it a compile error, at the cost of many targets |
 | DS-10 | No `.padding(16)`, `.frame(height: 48)`, `Color(red:…)`, `.font(.system(size:))`, `cornerRadius: 12` in components: tokens (`ElectronDimens`, color extensions, typography) |
 | DS-12 | `#Preview` light and dark (`.preferredColorScheme(.dark)`) |
 | DS-13 | Overlay content in its own view; presentation (`.sheet`, `.fullScreenCover`) at the variant or screen level |

@@ -94,6 +94,10 @@ def find_features(root: Path, design_systems):
     return unique
 
 
+def features_of(feature: Path, suffix: str):
+    return list(walk(feature, suffix))
+
+
 def module_root(path: Path):
     for parent in [path, *path.parents]:
         if (parent / "build.gradle.kts").exists() or (parent / "build.gradle").exists() or (parent / "Package.swift").exists():
@@ -241,7 +245,7 @@ DOMAIN_IMPORT = re.compile(r"^import\s+[\w.]*\.(domain|data)\.[\w.]+|^import\s+[
 MATERIAL_IMPORT = re.compile(r"^import\s+androidx\.compose\.material3\.")
 
 
-def audit_compose_features(root: Path, feature: Path, ds_packages, findings):
+def audit_compose_features(root: Path, feature: Path, ds_packages, findings, kmp=False):
     for path in walk(feature, ".kt"):
         lines = lines_of(path)
         text = "\n".join(lines)
@@ -253,6 +257,8 @@ def audit_compose_features(root: Path, feature: Path, ds_packages, findings):
                 findings.append(Finding("FT-04", "blocker", rel(root, path), i + 1, "A screen imports design-system internals (variant or primitive)."))
             if ds_packages and MATERIAL_IMPORT.match(stripped):
                 findings.append(Finding("FT-04", "minor", rel(root, path), i + 1, "Material imported in a feature while a design system exists: use its component, or add the missing one."))
+        if kmp:
+            platform_wording(root, path, lines, "@Preview", findings)
         if re.search(r"collectAsState(WithLifecycle)?\(", text) and re.search(r"\bfun\s+\w+Screen\s*\(", text) and not re.search(r"\bfun\s+\w+Route\s*\(", text):
             findings.append(Finding("FT-02", "major", rel(root, path), 1, "The screen collects state itself: split it into an XRoute (collects, no UI) and a stateless XScreen (previewable)."))
 
@@ -261,6 +267,9 @@ def audit_compose_features(root: Path, feature: Path, ds_packages, findings):
 
 SWIFT_PUBLIC = re.compile(r"^\s*public\s+(struct|enum|class|func|var|let|extension)\b")
 SWIFT_CLOSURE_PROP = re.compile(r"^\s*(public\s+)?(let|var)\s+\w+\s*:\s*(@escaping\s+)?\(?\([^)]*\)\s*(async\s+)?->")
+SWIFT_TYPE_DECL = re.compile(r"^\s*(?:private\s+|fileprivate\s+|internal\s+)?(?:final\s+)?(?:struct|enum|class)\s+(\w+)", re.M)
+SWIFT_IDENTIFIER = re.compile(r"\b[A-Z]\w+\b")
+SWIFT_FIXED_FONT = re.compile(r"\.system\(size:")
 SWIFT_RAW = re.compile(r"\.padding\(\s*\d+|\.frame\((width|height|minHeight|maxWidth):\s*\d+|Color\(\s*red:|Color\(\.sRGB|\.font\(\.system\(size:\s*\d+|cornerRadius:\s*\d+")
 
 
@@ -277,7 +286,33 @@ def audit_swift_ds(root: Path, ds: Path, findings):
             continue
         if len(re.findall(r"public struct \w+\s*:\s*View", text)) > 1:
             findings.append(Finding("DS-01", "major", rel(root, path), 1, "Several public views in one flat file: one folder per component."))
-    for comp in sorted(p for p in components.iterdir() if p.is_dir()):
+    comps = sorted(p for p in components.iterdir() if p.is_dir())
+    # Swift has no imports inside a module, so composites are checked by the internal types they name.
+    declared = {comp: set() for comp in comps}
+    internals = {}
+    for comp in comps:
+        for path in comp.rglob("*.swift"):
+            for name in SWIFT_TYPE_DECL.findall(path.read_text()):
+                declared[comp].add(name)
+                if "/Variants/" in str(path) or "/Primitives/" in str(path):
+                    internals.setdefault(name, set()).add(comp.name)
+    for comp in comps:
+        for path in comp.rglob("*.swift"):
+            for i, line in enumerate(lines_of(path)):
+                for name in set(SWIFT_IDENTIFIER.findall(line)) & internals.keys():
+                    if comp.name not in internals[name] and name not in declared[comp]:
+                        owner = ", ".join(sorted(internals[name]))
+                        findings.append(Finding("DS-08", "blocker", rel(root, path), i + 1,
+                                                f"Uses `{name}`, an internal of `{owner}`: composites use other components through their public entry only."))
+        entry = [p for p in comp.glob("*.swift") if p.stem.lower().endswith(comp.name.lower())]
+        for path in entry:
+            text = path.read_text()
+            if "#Preview" not in text:
+                findings.append(Finding("DS-12", "minor", rel(root, path), 1, "No #Preview for the component."))
+            elif not re.search(r"preferredColorScheme\(\.dark\)|colorScheme, \.dark|dark", text):
+                findings.append(Finding("DS-12", "minor", rel(root, path), 1, "No dark-theme preview."))
+
+    for comp in comps:
         if not (comp / "Models").exists() and not (comp / "models").exists():
             findings.append(Finding("DS-06", "major", rel(root, comp), 1, "No Models/ folder: the view is driven by raw parameters instead of a UI model."))
         for path in comp.rglob("*.swift"):
@@ -294,13 +329,47 @@ def audit_swift_ds(root: Path, ds: Path, findings):
                     findings.append(Finding("DS-06", "blocker", rel(root, path), i + 1, "UI model stores a closure: signals are view parameters."))
                 if layer != "Models" and not in_preview and SWIFT_RAW.search(line):
                     findings.append(Finding("DS-10", "major", rel(root, path), i + 1, f"Raw value `{SWIFT_RAW.search(line).group(0)}`: take it from the tokens."))
+                elif not in_preview and SWIFT_FIXED_FONT.search(line):
+                    findings.append(Finding("DS-15", "minor", rel(root, path), i + 1,
+                                            "`.system(size:)` ignores Dynamic Type: use a text style, Font.custom(_:size:relativeTo:) or @ScaledMetric."))
 
 
-def audit_swift_features(root: Path, feature: Path, findings):
+def audit_swift_features(root: Path, feature: Path, findings, kmp=False):
     for path in walk(feature, ".swift"):
-        for i, line in enumerate(lines_of(path)):
+        lines = lines_of(path)
+        for i, line in enumerate(lines):
             if re.search(r"\b\w+(DomainModel|Dto|Entity)\b", line):
                 findings.append(Finding("FT-01", "blocker", rel(root, path), i + 1, "The UI uses a domain/data type: consume UI models only."))
+            if kmp and re.match(r"\s*default\s*:", line):
+                findings.append(Finding("FT-08", "minor", rel(root, path), i + 1,
+                                        "`default:` in a switch: over Kotlin enums and sealed classes, switch exhaustively (SKIE, onEnum(of:)) so a new case fails the build."))
+        if kmp:
+            platform_wording(root, path, lines, "#Preview", findings)
+
+
+USER_TEXT = re.compile(r'"((?:[^"\\]|\\.)*)"')
+
+
+def platform_wording(root: Path, path: Path, lines, preview_marker, findings):
+    """FT-07: in a Kotlin Multiplatform app, user-facing text written in platform UI code exists twice."""
+    if "preview" in path.stem.lower():
+        return
+    count, first = 0, None
+    for i, line in enumerate(lines):
+        if line.strip().startswith(preview_marker):
+            break
+        if line.strip().startswith(("//", "*", "import ", "package ", "#")):
+            continue
+        for text in USER_TEXT.findall(line):
+            words = re.sub(r"\\\(.*?\)|\$\{.*?\}|\$\w+", " ", text)
+            if "://" in text or not re.search(r"[A-Za-zÀ-ÿ]{2,}", words):
+                continue
+            if re.search(r"[A-Za-zÀ-ÿ]{2,}\s+[A-Za-zÀ-ÿ]", words) or re.fullmatch(r"[A-ZÀ-Ý][a-zà-ÿ]{3,}[.!?]?", words.strip()):
+                count += 1
+                first = first or i + 1
+    if count:
+        findings.append(Finding("FT-07", "major", rel(root, path), first,
+                                f"{count} user-facing text(s) in platform UI code: in a multiplatform app, wording and screen decisions belong to the shared presentation."))
 
 
 # ---------------------------------------------------------------- report
@@ -347,9 +416,15 @@ def main():
                 break
         if any(ds.rglob("*.swift")):
             audit_swift_ds(root, ds, findings)
+    kmp = any(p.is_dir() and any(p.rglob("*.kt")) for p in root.rglob("commonMain") if not any(x in SKIP_DIRS for x in p.parts))
+    if kmp and any(features_of(f, ".swift") for f in features):
+        gradle = [g for g in root.rglob("build.gradle*") if not any(x in SKIP_DIRS for x in g.parts)]
+        if not any("skie" in g.read_text().lower() for g in gradle) and not any("skie" in t.read_text().lower() for t in root.rglob("libs.versions.toml")):
+            findings.append(Finding("FT-08", "minor", ".", 1,
+                                    "Kotlin Multiplatform with a SwiftUI app and no SKIE: Kotlin enums and sealed classes reach Swift as classes (no exhaustive switch), Flow and suspend need hand-written bridges."))
     for feature in features:
-        audit_compose_features(root, feature, ds_packages, findings)
-        audit_swift_features(root, feature, findings)
+        audit_compose_features(root, feature, ds_packages, findings, kmp)
+        audit_swift_features(root, feature, findings, kmp)
 
     if args.format == "json":
         report = json.dumps({"designSystems": [rel(root, d) for d in design_systems], "features": [rel(root, f) for f in features],
