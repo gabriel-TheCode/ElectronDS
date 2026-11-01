@@ -85,7 +85,7 @@ Work in this order; each layer only depends on the ones before it. Build after e
 5. **Composites**, after the components they use.
 6. **Overlays**: dialog, sheet, menu, tooltip, with the surface split from the window.
 7. **Features**: Route/Screen split, feature UI models, mappers to component UI models, removal of domain types from the UI, callers migrated to the new APIs. On KMP, first move wording and screen decisions into the shared presentation (FT-07) and add SKIE (FT-08), then thin each platform's mappers.
-8. **Architecture**, only when in scope: use cases with one `invoke`, `DomainModel`/`UiModel` naming, mappers at each boundary, dependency direction.
+8. **Architecture**, only when in scope: use cases with one `invoke`, layer suffixes on every model (`DomainModel`, `Dto`/`Entity`, `UiModel`), mappers at each boundary, dependency direction, feature-first modules with layers inside, no feature depending on another, every displayed text in string resources.
 9. **Previews, screenshot tests, catalog** for every component you created or changed.
 
 Per component, follow the playbook: folder `components/<name>/` with the entry, `models/`, `variants/`, `primitives/`; sealed `@Immutable` model; internal variants resolving tokens in a `*Styling.kt`; internal primitives taking raw values; one callback per interaction named `on…`; previews light and dark.
